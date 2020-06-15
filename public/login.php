@@ -3,9 +3,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-$node_id_hash = ';'
-
-require_once('../lib/compress_simple.php');
+$node_id_hash = ';';
+ 
 require_once('../lib/rsa_simple.php');
 require_once('../lib/cert_simple.php');
 require_once('../lib/pgp_simple.php');
