@@ -27,7 +27,7 @@ Trait Hash_simple {
         $array_hashed = new stdClass();
         shuffle($array);
         $array_hashed->to_share = $array;
-        foreach ($array as $k => $v) $array_hashed->to_store[$k] = self::hash($v);
+        foreach ($array as $k => $v) $array_hashed->to_store[$k] = self::hash($v, $hash_prefix);
         
         return $array_hashed;
     }
