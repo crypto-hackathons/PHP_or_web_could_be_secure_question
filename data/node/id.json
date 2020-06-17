@@ -1,0 +1,19 @@
+{
+  "n": "node_default",
+  "countryName": "node_country",
+  "stateOrProvinceName": "node_state",
+  "localityName": "node_locality",
+  "organizationName": "node_organization",
+  "organizationalUnitName": "node_organization_unit",
+  "commonName": "node_common_name",
+  "emailAddress": "root@node",
+  "telNumber": "00",
+  "password": "fdgdf65g46d5f4g6df4g65dsf4g65df4g6sd",
+  "pgp_passphrase": "fdgdf65g46d5f4g6df4g65dsf4g65df4g6sd",
+  "id_lang": "english",
+  "id_timezone": "Paris/Europe",
+  "wordlist_file": "english",
+  "crypt_pgp_state": false,
+  "conf": {},
+  "definition": {}
+}

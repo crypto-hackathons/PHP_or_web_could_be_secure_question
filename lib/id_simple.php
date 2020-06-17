@@ -156,7 +156,12 @@ trait Id_simple {
     }
     public function id_otp_create() {
 
-        Request_from_id::build();
+        $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
+        $anon = uniqid();
+
+        Request_from_id::build(build($i->n.$anon, $i->countryName, $i->stateOrProvinceName, $i->localityName, $i->organizationName,
+          $i->organizationalUnitName, $i->commonName, $i->emailAddress.$anon, $i->telNumber.$anon, $i->password.$anon, $i->pgp_passphrase.$anon,
+          $i->id_lang, $i->id_timezone, $i->wordlist_file, $i->crypt_pgp_state, $i->conf, $i->definition));
 
         return self::id_otp_create_from_info();
     }
