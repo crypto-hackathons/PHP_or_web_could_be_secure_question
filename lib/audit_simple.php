@@ -30,7 +30,7 @@ trait Audit_simple {
     return $data;
   }
 
-  function audit_verify(string $data, $otp_id = false):bool {
+  function audit_verify(string $data, $otp_id = false):stdClass {
 
     $data = self::uncompress($data);
     $object = json_decode($data);
@@ -57,6 +57,6 @@ trait Audit_simple {
 
       if(self::hash($object_check_hash) !== $object->out->hash) error('Hash error');
     }
-    return true;
+    return $object_check_hash;
   }
 }

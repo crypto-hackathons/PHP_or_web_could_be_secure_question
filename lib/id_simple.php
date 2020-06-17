@@ -4,6 +4,7 @@ trait Id_simple {
 
     use Hash_simple, Compress_simple, Rsa_simple, Crypto_simple;
 
+    public static $id_dir_global;
     public static $id_dir;
     public static $id_commonName;
     public static $id_name;
@@ -132,33 +133,24 @@ trait Id_simple {
     public static function id_get_from_otp_id(string $password, string $id_name, string $otp_id, string $cypher_key, string $definition): string {
 
         $id_hashed = self::hash($password.$id_name);
+        $file = self::$id_dir_global.'/'.$id_hashed.'.json';
+
+        if(is_file($file) === false) error('Id not found');
 
         self::otp_verify($file, $otp_id, $otp_name);
 
-        $file = self::$id_dir->id_dir.'/'.$id_hashed.'.json';
+        $data = file_get_contents($file);
 
-        foreach(glob($mask) as $file) {
+        $id->cert->public_key = self::$id_public_key;
+        $id->cert->sign_public_key = self::$id_sign_public_key;
 
-            $i = explode(';', file_get_contents($file));
-            $session_id_real = $i[0];
-            $id_name_hashed = $i[1];
-        }
-        $mask = '../data/id/'.$id_name_hashed.'/'.$session_id_real.'_*'.'.json';
+        $id->cipher->id_private_key_crypted;
+        $id->cipher->id_sign_private_key_crypted;
 
-        foreach(glob($mask) as $file) {
+        $id = audit_verify($data, self::$otp_id);
 
-            $data_checksum = explode('_', $file)[1];
-            $data_checksum = explode('.', $data_checksum)[0];
-            $data = file_get_contents($file);
+        $id->data = elf::rsa_uncrypt($id);
 
-            if($data_checksum !== $data)  error('Bad session intregrity.');
-
-            $data = self::uncompress($data);
-            $data = json_decode($data);
-            $data->cert->priv_key = self::crypto_uncrypt($data->cert->priv_key_crypted, $cypher_key);
-            $data->data = self::rsa_uncrypt($data->data);
-        }
-        if($data === false) error('Session not found.');
 
         return $session_id;
     }

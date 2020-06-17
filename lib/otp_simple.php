@@ -18,6 +18,8 @@ trait Otp_simple {
 	public static $otp_private_key_crypted;
 	public static $otp_sign_private_key_crypted;
 
+	public static $otp_dir = '../data/otp/';
+
 	public static function otp_hash(string $data):string {
 
 		return self::hash($data, self::$otp_id);
@@ -29,7 +31,7 @@ trait Otp_simple {
 		$file_tmp = explode('.', basename($file));
 		$file_tmp_end = end($file_tmp);
 		$file = str_replace($file_tmp_end, 'otp_'.$file_tmp_end);
-		$file_otp = '../data/otp/'.basename($file);
+		$file_otp = self::$otp_dir.basename($file);
 
 		if(is_file($file_otp) === true) {
 
@@ -61,7 +63,7 @@ trait Otp_simple {
 		file_put_contents($file_otp, self::$otp_file.';'.self::$otp_time.';'.self::$otp_timeout.':'.self::$otp_id.';'.self::$otp_name);
 
 		// hashed with otp
-		self::$otp_word_hash = self::hash_array(json_decode(file_get_contents('../data/wordlist/'.$id_lang.'.json')), self::$otp_id);
+		self::$otp_word_hash = self::hash_array(json_decode(file_get_contents(self::$seed_word_list_dir.$id_lang.'.json')), self::$otp_id);
 		self::$otp_password_hash = self::otp_hash($id_password);
 		self::$otp_pgp_passphrase_hash = self::otp_hash($id_pgp_passphrase);
 		self::$otp_emailAddress_hash = self::otp_hash($id_emailAddress);
@@ -87,7 +89,7 @@ trait Otp_simple {
 
   function otp_verify(string $file, string $otp_id, string $otp_name):bool {
 
-		$file_otp = '../data/otp/'.basename($file);
+		$file_otp = self::$otp_dir.basename($file);
 
 		if(is_file($file_otp) === false) error('Otp not found');
 

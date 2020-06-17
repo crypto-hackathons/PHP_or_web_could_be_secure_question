@@ -19,6 +19,7 @@ trait Seed_simple
     private static $SEED_INVALID_CHECKSUM = 'Invalid mnemonic checksum';
 
     private static $seed_entropy_algo = 'sha512'; // 128 bits
+    public static $seed_word_list_dir = '../data/wordlists/';
 
     public $seed_word_list;
     public $seed_mnemonic;
