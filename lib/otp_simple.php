@@ -1,26 +1,28 @@
 <?php
 
 trait Otp_simple {
-	
-	use Rsa_Simple, Hash_simple;
+
+	use Rsa_Simple, Hash_simple, Sign_simple;
 
 	public static $otp_id;
 	public static $otp_time;
 	public static $otp_timeout = false;
-	public static $otp_word;
 	public static $otp_public_key;
-	private static $otp_private_key;
-	public static $otp_password;
-	public static $otp_pgp_passphrase;
-	public static $otp_emailAddress;
-	public static $otp_telNumber;
+	public static $otp_sign_public_key;
+	public static $otp_word_hash;
+	public static $otp_password_hash;
+	public static $otp_pgp_passphrase_hash;
+	public static $otp_emailAddress_hash;
+	public static $otp_telNumber_hash;
+	public static $otp_private_key_crypted;
+	public static $otp_sign_private_key_crypted;
 
 	public static function otp_hash(string $data):string {
 
 		return self::hash($data, self::$otp_id);
 	}
 
-	public static function otp_get(string $file, string $otp_id, string $id_emailAddress, string $id_telNumber, string $id_password, string $id_pgp_passphrase, string $id_lang):bool {
+	public static function otp_set(string $file, string $otp_id, string $id_emailAddress, string $id_telNumber, string $id_password, string $id_pgp_passphrase, string $id_lang):stdClass {
 
 		$file_tmp = explode('.', basename($file));
 		$file_tmp_end = end($file_tmp);
@@ -45,28 +47,29 @@ trait Otp_simple {
 
 		file_put_contents($file_otp, self::$otp_time.';'.self::$otp_timeout.':'.self::$otp_id.';'.self::$otp_name);
 
-		self::$otp_word = self::hash_array(json_decode(file_get_contents('../data/wordlist/'.$id_lang.'.json')), self::$otp_id);
+		// hashed with otp
+		self::$otp_word_hash = self::hash_array(json_decode(file_get_contents('../data/wordlist/'.$id_lang.'.json')), self::$otp_id);
+		self::$otp_password_hash = self::otp_hash($id_password);
+		self::$otp_pgp_passphrase_hash = self::otp_hash($id_pgp_passphrase);
+		self::$otp_emailAddress_hash = self::otp_hash($id_emailAddress);
+		self::$otp_telNumber_hash = self::otp_hash($id_telNumber);
+
+		// clear
 		self::$otp_public_key = self::rsa_public_key_get();
-		self::$otp_private_key = self::rsa_private_key_get();
-		self::$otp_password = self::otp_hash($id_password);
-		self::$otp_pgp_passphrase = self::otp_hash($id_pgp_passphrase);
-		self::$otp_emailAddress = self::otp_hash($id_emailAddress);
-		self::$otp_telNumber = self::otp_hash($id_telNumber);
+		self::$otp_sign_public_key = self::sign_public_key_get();
 
-		return true;
-	}
+		// crypted
+		$otp_private_key = self::rsa_private_key_get();
+		$crypto_crypt = self::crypto_crypt(self::$otp_private_key);
+		self::$otp_private_key_crypted = $crypto_crypt->ciphertext;
+		$otp_sign_private_key = self::sign_private_key_get();
+		$crypto_crypt = self::crypto_crypt(self::$otp_sign_private_key);
+		self::$otp_sign_private_key = $crypto_crypt->ciphertext;
 
-	public function id(){
+		$result = new stdClass();
+		$result->otp_private_key_crypted_key = $crypto_crypt->cipher_back;
+		$result->$otp_sign_private_key_key = $crypto_crypt->cipher_back_key;
 
-		self::otp_get($file, $otp_id, $id_emailAddress, $id_telNumber, $id_password, $id_pgp_passphrase, $id_lang);
-
-		self::$id_word = self::$otp_word;
-		self::$id_public_key = self::$otp_public_key;
-		self::$id_private_key = self::$otp_private_key;
-		self::$id_password = self::$otp_password;
-		self::$id_pgp_passphrase = self::$otp_pgp_passphrase;
-		self::$id_emailAddress = self::$otp_emailAddress;
-		self::$id_telNumber = self::$otp_telNumber;
-
+		return $result;
 	}
 }
