@@ -10,7 +10,7 @@ trait Ppg_simple {
     public static $pgp_passphrase_file = '../data/pgp/passphrase.pgp';
     private static $pgp_passphrase;
 
-    private static function pgp_init(string $pgp_passphrase){
+    private static function pgp_init(string $pgp_passphrase):bool {
 
         putenv('GNUPGHOME='.self::$pgp_env);
 
@@ -20,7 +20,7 @@ trait Ppg_simple {
         return true;
     }
 
-    private static function pgp_passphrase_get() {
+    private static function pgp_passphrase_get():string {
 
         return file_get_contents(self::$pgp_passphrase_file);
     }
@@ -42,7 +42,7 @@ trait Ppg_simple {
         return $cypher;
     }
 
-    public function pgp_uncrypt(string $cypher, string $pgp_passphrase) {
+    public function pgp_uncrypt(string $cypher, string $pgp_passphrase):string {
 
         $cypher_parts = explode(self::$pgp_separator, $cypher);
         $msg_crypted = $cypher_parts[0];

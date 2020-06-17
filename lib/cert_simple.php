@@ -9,12 +9,12 @@ trait Cert_simple {
     public static $cert_pkey_file = '../data/cert/mine/private_pwd.pem';
     private static $cert_password;
     private static $cert_user_data;
-    public $cert_client;
-    public $cert_client_signed;
+    private static $cert_client;
+    private static $cert_client_signed;
 
-    public function cert_client_set(string $cert_client){
+    public static function cert_client_set(string $cert_client):bool {
 
-        $this->cert_client = $cert_client;
+        self::$cert_client = $cert_client;
 
         return true;
     }
@@ -25,7 +25,7 @@ trait Cert_simple {
                                      string $organizationName,
                                      string $organizationalUnitName,
                                      string $commonName,
-                                     string $emailAddress, string $password) {
+                                     string $emailAddress, string $password):bool {
 
         self::$cert_user_data = array(
         'countryName' => $countryName,
@@ -57,13 +57,13 @@ trait Cert_simple {
         return true;
     }
 
-    public function cert_client_sign(){
+    public static function cert_client_sign(): bool{
 
-        $usercert = openssl_csr_sign($this->cert_client, self::cert_x509_get(), self::rsa_private_key_get(), self::$rsa_key_days);
+        $usercert = openssl_csr_sign(self::$cert_client, self::cert_x509_get(), self::rsa_private_key_get(), self::$rsa_key_days);
 
         openssl_x509_export($usercert, $csrout);
 
-        $this->cert_client_signed = $csrout;
+        self::$cert_client_signed = $csrout;
 
         return true;
     }

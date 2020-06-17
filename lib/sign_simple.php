@@ -11,7 +11,7 @@ Trait Sign_simple
 
     public $sign_public_key;
 
-    public function sign_init()
+    public function sign_init():bool
     {
 
         $private_key_res = openssl_pkey_new(array(
@@ -27,7 +27,7 @@ Trait Sign_simple
         return true;
     }
 
-    public function sign(string $data)
+    public function sign(string $data):string
     {
 
         $private_key_res = $this->sign_private_key_get();
@@ -42,7 +42,7 @@ Trait Sign_simple
         return file_get_contents(self::$sign_private_key_file);
     }
 
-    public function sign_verify(string $data, string $signature, $public_key_res = false)
+    public function sign_verify(string $data, string $signature, $public_key_res = false):bool
     {
 
         if ($public_key_res === false) {
@@ -56,7 +56,7 @@ Trait Sign_simple
         return false;
     }
 
-    public static function sign_public_key_get()
+    public static function sign_public_key_get():strung
     {
 
         return file_get_contents(self::$sign_public_key_file);

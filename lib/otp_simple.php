@@ -4,6 +4,7 @@ trait Otp_simple {
 
 	use Rsa_Simple, Hash_simple, Sign_simple;
 
+	public static $otp_file;
 	public static $otp_id;
 	public static $otp_time;
 	public static $otp_timeout = false;
@@ -22,30 +23,42 @@ trait Otp_simple {
 		return self::hash($data, self::$otp_id);
 	}
 
-	public static function otp_set(string $file, string $otp_id, string $id_emailAddress, string $id_telNumber, string $id_password, string $id_pgp_passphrase, string $id_lang):stdClass {
+	public static function otp_set(string $file, string $otp_id, string $otp_name, string $id_emailAddress, string $id_telNumber, string $id_password,
+	string $id_pgp_passphrase, string $id_lang):Key_crypted_parts {
 
 		$file_tmp = explode('.', basename($file));
 		$file_tmp_end = end($file_tmp);
 		$file = str_replace($file_tmp_end, 'otp_'.$file_tmp_end);
-		$file_otp = '../data/otp/'.$file;
+		$file_otp = '../data/otp/'.basename($file);
 
-		$i = explode(';', file_get_contents($file_otp));
-		self::$otp_time = trim($i[0]);
-		self::$otp_timeout = trim($i[1]);
+		if(is_file($file_otp) === true) {
 
-		if(self::$otp_timeout === '0') self::$otp_timeout = false;
+			$i = explode(';', file_get_contents($file_otp));
 
-		self::$otp_id = trim($i[2]);
-		self::$otp_name = trim($i[3]);
+			self::$otp_file = trim($i[0]);
+			self::$otp_time = trim($i[1]);
+			self::$otp_timeout = trim($i[2]);
+
+			if(self::$otp_timeout === '0') self::$otp_timeout = false;
+
+			self::$otp_id = trim($i[3]);
+			self::$otp_name = trim($i[4]);
+		}
+		else {
+
+			self::$otp_id = $otp_id;
+			self::$otp_file = $file;
+			self::$otp_name = $otp_name;
+		}
 
 		if($otp_id !== self::$otp_id)  error('Otp error.');
-
 		if(self::$otp_timeout !== false && (time() - self::$otp_time)) > self::$otp_timeout) error('Otp timeout');
+		if(self::$otp_name !== $otp_name) error('Otp name');
 
 		self::$otp_id = uniqid();
 		self::$otp_time = time();
 
-		file_put_contents($file_otp, self::$otp_time.';'.self::$otp_timeout.':'.self::$otp_id.';'.self::$otp_name);
+		file_put_contents($file_otp, self::$otp_file.';'.self::$otp_time.';'.self::$otp_timeout.':'.self::$otp_id.';'.self::$otp_name);
 
 		// hashed with otp
 		self::$otp_word_hash = self::hash_array(json_decode(file_get_contents('../data/wordlist/'.$id_lang.'.json')), self::$otp_id);
@@ -61,15 +74,35 @@ trait Otp_simple {
 		// crypted
 		$otp_private_key = self::rsa_private_key_get();
 		$crypto_crypt = self::crypto_crypt(self::$otp_private_key);
-		self::$otp_private_key_crypted = $crypto_crypt->ciphertext;
+		self::$otp_private_key_crypted = $crypto_crypt->cipher_back;
+		$private_cipher_back_key = $cipher_back->key;
+
 		$otp_sign_private_key = self::sign_private_key_get();
 		$crypto_crypt = self::crypto_crypt(self::$otp_sign_private_key);
-		self::$otp_sign_private_key = $crypto_crypt->ciphertext;
+		self::$otp_sign_private_key_crypted = $crypto_crypt->cipher_back;
+		$sign_private_cipher_back_key = $cipher_back->key;
 
-		$result = new stdClass();
-		$result->otp_private_key_crypted_key = $crypto_crypt->cipher_back;
-		$result->$otp_sign_private_key_key = $crypto_crypt->cipher_back_key;
-
-		return $result;
+		return new Key_crypted_parts($private_cipher_back_key, $sign_private_cipher_back_key);
 	}
+
+  function otp_verify(string $file, string $otp_id, string $otp_name):bool {
+
+		$file_otp = '../data/otp/'.basename($file);
+
+		if(is_file($file_otp) === false) error('Otp not found');
+
+		$i = explode(';', file_get_contents($file_otp));
+		self::$otp_file = trim($i[0]);
+		self::$otp_time = trim($i[1]);
+		self::$otp_timeout = trim($i[2]);
+		self::$otp_id = trim($i[3])
+		self::$otp_name = trim($i[4]);
+
+		if($otp_id !== self::$otp_id)  error('Otp error.');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time)) > self::$otp_timeout) error('Otp timeout');
+		if(self::$otp_name !== $otp_name) error('Otp name');
+
+		return true;
+	}
+
 }

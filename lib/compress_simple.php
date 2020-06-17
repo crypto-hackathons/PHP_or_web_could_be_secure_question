@@ -7,7 +7,7 @@ trait Compress_simple {
     private static $compress_state = true;
     private static $compress_level = 9;
 
-    public static function compress(string $msg) {
+    public static function compress(string $msg):string {
 
       if(self::$compress_state === true) {
 
@@ -16,7 +16,7 @@ trait Compress_simple {
       return $msg;
     }
 
-    public static function uncompress(string $msg){
+    public static function uncompress(string $msg):string {
 
       if(self::$compress_state === true) {
 

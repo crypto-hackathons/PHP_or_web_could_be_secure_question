@@ -36,7 +36,8 @@ trait Id_simple {
         string $id_timezone,
         string $wordlist_file = self::$SEED_DEFAULT_WORDLIST_FILE,
         bool $crypt_pgp_state = false,
-        array $conf = array()) {
+        stdClass $conf,
+        stdClass $definition):stdClass {
 
         $dn = './';
         self::hash_init();
@@ -66,6 +67,9 @@ trait Id_simple {
         self::$id_lang = $id_lang;
         self::$id_timezone = $id_timezone;
 
+        $id_hashed = self::hash($password.self::$id_name);
+        $file = self::$id_dir->id_dir.'/'.$id_hashed.'.json';
+
         $crypted_key_keys = self::otp_set($file, $otp_id, $id_emailAddress, $id_telNumber, $id_password, $id_pgp_passphrase, $id_lang);
 
         // hasheed with otp
@@ -85,6 +89,8 @@ trait Id_simple {
 
         // clear
         $id = new stdClass();
+        $id->definition = $definition;
+        $id->conf = $conf;
         $id->conf->id_lang = self::$id_lang;
         $id->conf->id_timezone = self::$id_timezone;
         $id->conf->id_commonName = self::$id_commonName;
@@ -98,22 +104,21 @@ trait Id_simple {
 
         $data = self::audit_object($id, $id->sign->sign_public_key, self::$otp_id);
 
-        // id hashed
-        $id_hashed = self::hash($password.self::$id_name);
-
-        file_put_contents(self::$id_dir->id_dir.'/'.$id_hashed.'_'.uniqid().'.json', $data);
+        file_put_contents($file, $data);
 
         return $crypted_key_keys;
     }
 
-    public static function id_dir_create(string $dir, string $n, string $dn){
+    public static function id_dir_create(string $dir, string $n, string $dn): bool{
 
         $dir = $dn.'/../data/'.$dir.'/'.$n;
 
-        if(is_dir($dir) === false) mkdir($dir, 777, true);
+        if(is_dir($dir) === false) return mkdir($dir, 777, true);
+
+        return true;
     }
 
-    public static function id_dir_create_all(string $n, string $dn, array $dir_list = array('key', 'cert', 'pgp', 'seed', 'id')):void {
+    public static function id_dir_create_all(string $n, string $dn, array $dir_list = array('key', 'cert', 'pgp', 'seed', 'id')):stdClass {
 
         $dir = new stdClass();
 
@@ -124,9 +129,13 @@ trait Id_simple {
         return $dir;
     }
 
-    public static function id_get_from_sesison_id(string $session_id, string $cypher_key){
+    public static function id_get_from_otp_id(string $password, string $id_name, string $otp_id, string $cypher_key, string $definition): string {
 
-        $mask = '../data/session/'.$session_id.'_*.txt';
+        $id_hashed = self::hash($password.$id_name);
+
+        self::otp_verify($file, $otp_id, $otp_name);
+
+        $file = self::$id_dir->id_dir.'/'.$id_hashed.'.json';
 
         foreach(glob($mask) as $file) {
 
@@ -154,16 +163,16 @@ trait Id_simple {
         return $session_id;
     }
 
-    public static function id_get(string $id_name, string $password, string $cypher_key){
+    public static function id_get(string $id_name, string $password, string $cypher_key, stdClass $definition):string {
 
         $session_id = self::hash($password.$id_name);
 
         file_put_contents('../data/session/'.$session_id.'_'.uniqid().'.txt', $session_id.';'.self::hash($id_name));
 
-        return self::id_get_from_sesison_id($session_id, $cypher_key);
+        return self::id_get_from_sesison_id($session_id, $cypher_key, $definition);
     }
 
-    public static function id_session_init(array $conf, $node){
+    public static function id_session_init(array $conf, $node, $definition):string {
 
         if(isset($_GET['sessionCreate']) === false) {
 
@@ -175,7 +184,7 @@ trait Id_simple {
         }
         elseif(isset($_GET['session']) === false) {
 
-           return $session_id = self::id_session_anon_create($conf, $node);
+           return $session_id = self::id_session_anon_create($conf, $node, $definition);
         }
         elseif(isset($_GET['session']) === true) {
 
@@ -183,7 +192,7 @@ trait Id_simple {
         }
     }
 
-    public static function id_session_create(array $conf){
+    public static function id_session_create(stdClass $conf, stdClass $definition):stdClass {
 
         if(isset($_POST['n']) === true) $n = urldecode(strip_tags($_POST['n']));
         if(isset($_POST['countryName']) === true) $countryName = urldecode(strip_tags($_POST['countryName']));
@@ -199,8 +208,9 @@ trait Id_simple {
         if(isset($_POST['id_lang']) === true) $id_lang = urldecode(strip_tags($_POST['id_lang']));
         if(isset($_POST['id_timezone']) === true) $id_timezone = urldecode(strip_tags($_POST['id_timezone']));
         if(isset($_POST['wordlist_file']) === true) $wordlist_file = urldecode(strip_tags($_POST['wordlist_file']));
+        if(isset($_POST['definition']) === true) $definition = urldecode(strip_tags($_POST['definition']));
 
-        $data = self::id_init(
+        $std = self::id_init(
             $n,
             $countryName,
             $stateOrProvinceName,
@@ -216,12 +226,13 @@ trait Id_simple {
             $id_timezone,
             $wordlist_file,
             false,
-            $conf);
+            $conf,
+            $definition);
 
-        return $file;
+        return $std;
     }
 
-    public static function id_session_anon_create(array $conf, $node){
+    public static function id_session_anon_create(array $conf, stdClass $node, stdClass $definition):stdClass {
 
         self::$id_anon = uniqid();
 
@@ -241,23 +252,26 @@ trait Id_simple {
             self::hash($node->id_timezone.self::$id_anon),
             self::hash($node->wordlist_file.self::$id_anon),
             false,
-            $conf);
+            $conf,
+            $definition);
     }
 
-    public static function id_session_login(){
+    public static function id_session_login():stdClass {
 
         if(isset($_POST['id_name']) === true) $id_name = urldecode(strip_tags($_POST['id_name']));
         if(isset($_POST['password']) === true) $password = urldecode(strip_tags($_POST['password']));
         if(isset($_POST['cypher_key']) === true) $cypher_key = urldecode(strip_tags($_POST['cypher_key']));
+        if(isset($_POST['definition']) === true) $definition = urldecode(strip_tags($_POST['definition']));
 
-        return self::id_get($id_name, $password, $cypher_key);
+        return self::id_get($id_name, $password, $cypher_key, $definition);
     }
 
-    public static function id_session_load(){
+    public static function id_session_load():stdClass {
 
         if(isset($_POST['session_id']) === true) $password = urldecode(strip_tags($_POST['session_id']));
         if(isset($_POST['cypher_key']) === true) $cypher_key = urldecode(strip_tags($_POST['cypher_key']));
+        if(isset($_POST['definition']) === true) $definition = urldecode(strip_tags($_POST['definition']));
 
-        return self::id_get_from_sesison_id($session_id, $cypher_key);
+        return self::id_get_from_sesison_id($session_id, $cypher_key, $definition);
     }
 }
