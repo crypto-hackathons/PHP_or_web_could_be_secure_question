@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -34,5 +35,7 @@ class Distribute {
     use Crypto_simple;
 }
 $conf = json_decode(file_get_contents('../data/conf/global.json'));
+var_dump($conf);
+exit();
 $d = new Distribute();
 $d::id_session_init($conf);
