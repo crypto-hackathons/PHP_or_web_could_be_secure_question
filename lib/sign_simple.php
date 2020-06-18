@@ -13,7 +13,7 @@ Trait Sign_simple
 
     public function sign_init():bool {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $private_key_res = openssl_pkey_new(array(
             "private_key_bits" => self::$sign_private_key_bits,
@@ -30,7 +30,7 @@ Trait Sign_simple
 
     public function sign(string $data):string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $private_key_res = $this->sign_private_key_get();
         $signature = openssl_sign($data, $signature, $private_key_res, self::$sign_algo);
@@ -40,14 +40,14 @@ Trait Sign_simple
 
     public static function sign_private_key_get():string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$sign_private_key_file);
     }
 
     public function sign_verify(string $data, string $signature, $public_key_res = false):bool {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         if ($public_key_res === false) {
 
@@ -62,7 +62,7 @@ Trait Sign_simple
 
     public static function sign_public_key_get():string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$sign_public_key_file);
     }

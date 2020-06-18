@@ -27,22 +27,74 @@ require_once('../lib/crypto_simple_obj_cipher.php');
 require_once('../lib/hash_simple_obj_array_hashed.php');
 require_once('../lib/opt_simple_obj_key_crypted_parts.php');
 
-function e(string $error, string $error_redirect = 'location: login.php?error='){
+Class Env {
 
-    header($error_redirect.$error);
-    exit;
-}
+  public static $dir_root = '.';
+  public static $data_dir_global = '../data';
+  public static $data_dir_global_right = 0777; // @TODO /!\ to change
 
-function l(string $msg, $info = '', string $eol = '<br>') {
+  public static function dir_create(string $dir, string $n):string {
 
-    echo $msg.' --- '.json_encode($info).$eol;
+      self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir);
+
+      $dir = str_replace('../', '', $dir);
+      $dir = str_replace('./', '', $dir);
+      $n = str_replace('../', '', $n);
+      $n = str_replace('./', '', $n);
+
+      self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
+
+      $dir = self::$dir_root.'/'.Env::$data_dir_global.'/'.$dir.'/'.$n;
+
+      self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir);
+
+      if(is_dir($dir) === false){
+
+        self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir);
+
+        mkdir($dir, self::$data_dir_global_right, true);
+      }
+      return $dir;
+  }
+
+  public static function file_get_contents(string $file):string {
+
+    self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $file);
+
+    $file = str_replace('../', '', $file);
+    $file = str_replace('./', '', $file);
+
+    return file_get_contents(self::$dir_root.'/'.self::$data_dir_global.'/'.$file);
+  }
+
+  public static function file_get_contents_json(string $file):stdClass {
+
+    self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $file);
+
+    $file = str_replace('../', '', $file);
+    $file = str_replace('./', '', $file);
+
+    return json_decode(self::file_get_contents($file));
+  }
+
+  static function e(string $error, string $error_redirect = 'location: login.php?error='){
+
+      self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $error);
+
+      header($error_redirect.$error);
+      exit;
+  }
+
+  static function l(string $msg, $info = '', string $eol = '<br>') {
+
+      echo $msg.' --- '.json_encode($info).$eol;
+  }
 }
 
 class Distribute {
 
-    use Crypto_simple, Id_simple;
+    use Id_simple;
 }
 $conf = json_decode(file_get_contents('../data/conf/global.json'));
-
 $d = new Distribute();
 $d::id_session_init($conf);

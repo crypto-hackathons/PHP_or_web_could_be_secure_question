@@ -7,7 +7,7 @@ class Crypto_simple_obj_cipher {
 
   public function __construct(string $ciphertext, string $iv, string $tag, string $key) {
 
-    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
     $cipher_back = new stdClass();
     $cipher_back->ciphertext = $ciphertext;
@@ -23,7 +23,7 @@ class Crypto_simple_obj_cipher {
 
   public static function cipher_back_extract(string $compressed):stdClass {
 
-      l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+      Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
       $data = self::compress(self::$compressed);
 

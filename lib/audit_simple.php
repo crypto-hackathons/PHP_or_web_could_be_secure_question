@@ -6,7 +6,7 @@ trait Audit_simple {
 
   function audit_object(stdClass $object, string $sign_public_key, $otp_id = false):string {
 
-    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
     $data = json_encode($object);
     $object->out = new stdClass();
@@ -34,7 +34,7 @@ trait Audit_simple {
 
   function audit_verify(string $data, $otp_id = false):stdClass {
 
-    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
     $data = self::uncompress($data);
     $object = json_decode($data);
@@ -42,12 +42,12 @@ trait Audit_simple {
     $object_check_checksum = $object;
     unset($object_check_checksum->out->out->out);
 
-    if(md5(json_encode($object_check_checksum)) !== $object->out->out->out->checksum) e('Checksum error');
+    if(md5(json_encode($object_check_checksum)) !== $object->out->out->out->checksum) Env::e('Checksum error');
 
     $object_check_sign = $object_check_checksum;
     unset($object_check_sign->out->out);
 
-    if(self::sign_verify(json_encode($object_check_sign), $object->out->out->sign, $object->out->out->sign_public_key) === false) e('Sign error');
+    if(self::sign_verify(json_encode($object_check_sign), $object->out->out->sign, $object->out->out->sign_public_key) === false) Env::e('Sign error');
 
     $object_check_hash = $object_check_sign;
     unset($object_check_hash->out);
@@ -55,11 +55,11 @@ trait Audit_simple {
     if($otp_id !== false) {
 
       self::$otp_id = $otp_id;
-      if(self::otp_hash($object_check_hash) !== $object->out->hash) e('Hash error');
+      if(self::otp_hash($object_check_hash) !== $object->out->hash) Env::e('Hash error');
     }
     else {
 
-      if(self::hash($object_check_hash) !== $object->out->hash) e('Hash error');
+      if(self::hash($object_check_hash) !== $object->out->hash) Env::e('Hash error');
     }
     return $object_check_hash;
   }

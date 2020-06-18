@@ -8,7 +8,7 @@ class MerkleAttribut{
 
     public function __construct(array $infos) {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $hash_str = $this->list($infos);
 
@@ -37,7 +37,7 @@ class MerkleAttribut{
 
     public function list(array $infos) {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $hash_str = array();
 
@@ -57,7 +57,7 @@ class MerkleAttribut{
 
     public static function merkleTreeBinary($hash_str) {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $hash_str2 = array();
         $c = 1;
@@ -103,7 +103,7 @@ class MerkleTreeItem {
 
     public function __construct(array $infos, string $privkey){
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $merkleAttribut = new MerkleAttribut($infos);
         $this->attribut = $merkleAttribut;

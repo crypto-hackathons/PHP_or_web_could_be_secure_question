@@ -7,7 +7,7 @@ class Key_crypted_parts{
 
   public function __construct(string $private_cipher_back_key, string $sign_private_ccipher_back_key) {
 
-    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
     $this->private_key_crypted_key = $private_cipher_back_key;
     $this->sign_private_key_crypted_key = $sign_private_ccipher_back_key;

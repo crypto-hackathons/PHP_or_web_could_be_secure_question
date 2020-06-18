@@ -11,7 +11,7 @@ class  Request_from_otp extends Request {
 
     public function __construct() {
 
-      l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+      Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
       parent::__construct();
     }

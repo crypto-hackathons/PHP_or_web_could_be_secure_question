@@ -22,14 +22,14 @@ class Request_from_id extends Request {
 
   public function __construct() {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         parent::__construct();
   }
 
   public static function build(stdClass $i):array {
 
-    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $i);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $i);
 
     $_POST['n'] = $i->n;
     $_POST['countryName'] = $i->countryName;

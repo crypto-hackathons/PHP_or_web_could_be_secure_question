@@ -12,7 +12,7 @@ trait Pgp_simple {
 
     private static function pgp_init(string $pgp_passphrase):bool {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         putenv('GNUPGHOME='.self::$pgp_env);
 
@@ -24,14 +24,14 @@ trait Pgp_simple {
 
     private static function pgp_passphrase_get():string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$pgp_passphrase_file);
     }
 
     public function pgp_crypt(string $msg, string $rsa_public_key):string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $session_key = hash(self::$rsa_digest_alg, self::rsa_public_key_get() . time() . uniqid());
 
@@ -50,7 +50,7 @@ trait Pgp_simple {
 
     public function pgp_uncrypt(string $cypher, string $pgp_passphrase):string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $cypher_parts = explode(self::$pgp_separator, $cypher);
         $msg_crypted = $cypher_parts[0];
@@ -63,6 +63,14 @@ trait Pgp_simple {
         gnupg_decryptverify(self::$pgp_resource, $cypher, $plaintext);
 
         return $plaintext;
+    }
+
+    public static function pgp_init_key_dir($dir_key) {
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir_key);
+
+      self::$pgp_env = $dir_key.'/.gnupg';
+      self::$pgp_passphrase_file = $dir_key.'/passphrase.pgp';
     }
 
 }

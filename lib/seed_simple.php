@@ -26,7 +26,7 @@ trait Seed_simple
 
     public function seed_init(string $wordlist_file):bool {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         self::$seed_hash_prefix = hash('sha256', self::file_get_contents(self::$seed_grain_file));
         $this->seed_word_list = json_decode(file_get_contents($wordlist_file));
@@ -36,7 +36,7 @@ trait Seed_simple
 
     public function seed_private_key_master_str_get():array {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $grain = self::seed_grain_get();
         $rsa_private_key = self::rsa_private_key_get();
@@ -59,7 +59,7 @@ trait Seed_simple
 
     private static function seed_mnemonic_file_write(stdclass $seed_private_key_master_str):string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $file = self::$seed_private_key_master_dir.$seed_private_key_master_str->private_key_master.'.key';
         $data = json_encode($seed_private_key_master_str);
@@ -71,7 +71,7 @@ trait Seed_simple
 
     private static function seed_mnemonic_file_read(string $private_key_master):stdClass {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $file = self::$seed_private_key_master_dir.$private_key_master.'.key';
         $data = file_get_contents($file);
@@ -82,7 +82,7 @@ trait Seed_simple
 
     public function seed_mnemonic_gen():string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $mnemonic = array();
         $seed_private_key_master_str = $this->seed_private_key_master_str_get();
@@ -111,7 +111,7 @@ trait Seed_simple
 
     private static function seed_grain_get():string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $grain = file_get_contents(self::$seed_grain_file);
 
@@ -120,14 +120,14 @@ trait Seed_simple
 
     public function seed_mnemonic_get():string {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return $this->seed_mnemonic;
     }
 
     public function seed_mnemonic_set(string $mnemonic):bool {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $this->seed_mnemonic = $mnemonic;
 
@@ -136,7 +136,7 @@ trait Seed_simple
 
     public function seed_private_key_restore_control(string $private_key_master_str_test, string $checksum_str_test):bool {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $seed_private_key_master = $this->seed_private_key_master_str_get();
 
@@ -149,7 +149,7 @@ trait Seed_simple
 
     public function seed_private_key_restore(string $mnemonic):stdClass {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $this->seed_mnemonic_set($mnemonic);
 
@@ -171,5 +171,13 @@ trait Seed_simple
         $json = self::seed_mnemonic_file_read($private_key_master_str);
 
         return $json;
+    }
+
+    public static function seed_init_key_dir(string $dir_key) {
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir_key);
+
+        self::$seed_private_key_master_dir = $dir_key.'/';
+        self::$seed_grain_file = $dir_key.'/grain.txt';
     }
 }

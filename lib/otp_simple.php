@@ -22,7 +22,7 @@ trait Otp_simple {
 
 	public static function otp_hash(string $data):string {
 
-		l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		return self::hash($data, self::$otp_id);
 	}
@@ -30,7 +30,7 @@ trait Otp_simple {
 	public static function otp_set(string $file, string $otp_id, string $otp_name, string $id_emailAddress, string $id_telNumber, string $id_password,
 	string $id_pgp_passphrase, string $id_lang):Key_crypted_parts {
 
-		l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		$file_tmp = explode('.', basename($file));
 		$file_tmp_end = end($file_tmp);
@@ -57,9 +57,9 @@ trait Otp_simple {
 			self::$otp_name = $otp_name;
 		}
 
-		if($otp_id !== self::$otp_id)  e('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) e('Otp timeout');
-		if(self::$otp_name !== $otp_name) e('Otp name');
+		if($otp_id !== self::$otp_id)  Env::e('Otp error.');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout');
+		if(self::$otp_name !== $otp_name) Env::e('Otp name');
 
 		self::$otp_id = uniqid();
 		self::$otp_time = time();
@@ -93,11 +93,11 @@ trait Otp_simple {
 
   function otp_verify(string $file, string $otp_id, string $otp_name):bool {
 
-		l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		$file_otp = self::$otp_dir.basename($file);
 
-		if(is_file($file_otp) === false) e('Otp not found');
+		if(is_file($file_otp) === false) Env::e('Otp not found');
 
 		$i = explode(';', file_get_contents($file_otp));
 		self::$otp_file = trim($i[0]);
@@ -106,9 +106,9 @@ trait Otp_simple {
 		self::$otp_id = trim($i[3]);
 		self::$otp_name = trim($i[4]);
 
-		if($otp_id !== self::$otp_id)  e('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) e('Otp timeout');
-		if(self::$otp_name !== $otp_name) e('Otp name');
+		if($otp_id !== self::$otp_id)  Env::e('Otp error.');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout');
+		if(self::$otp_name !== $otp_name) Env::e('Otp name');
 
 		return true;
 	}

@@ -2,7 +2,7 @@
 
 trait Id_simple {
 
-    use Hash_simple, Compress_simple, Rsa_simple, Crypto_simple, Cert_simple, Pgp_simple;
+    use Crypto_simple, Hash_simple, Compress_simple, Rsa_simple, Crypto_simple, Cert_simple, Pgp_simple;
 
     public static $id_dir_global;
     public static $id_dir;
@@ -20,29 +20,22 @@ trait Id_simple {
     public static $id_word_hash;
     public static $id_private_key_crypted;
     public static $id_sign_private_key_crypted;
-    public static $id_data_dir_global = '../data';
-    public static $id_data_dir_local = './';
     public static $id_dir_list = array('key', 'cert', 'pgp', 'seed', 'id');
+    public static $id_node_file = 'node/id.json';
 
     public static function id_session_otp_create_from_info():stdClass {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_id();
-        $id_dir = self::id_dir_create_all($info->n, self::$id_data_dir_local);
         self::hash_init();
         self::$id_name = $info->n;
         $name_hashed =  self::hash($info->n);
-        self::$id_dir = self::id_dir_create_all($name_hashed , self::$id_data_dir_local);
-        self::$rsa_public_key_file = $id_dir->key.'/private.pem';
-        self::$rsa_private_key_file = self::$id_dir->key.'/public.pem';
-        self::$cert_csr_file = self::$id_dir->cert.'/src.pem';
-        self::$cert_x509_file = self::$id_dir->cert.'/x509.pem';
-        self::$cert_pkey_file = self::$id_dir->cert.'/private_pwd.pem';
-        self::$pgp_env = self::$id_dir->pgp.'/.gnupg';
-        self::$pgp_passphrase_file = self::$id_dir->pgp.'/passphrase.pgp';
-        self::$seed_private_key_master_dir = self::$id_dir->seed.'/';
-        self::$seed_grain_file = self::$id_dir->seed.'/grain.txt';
+        self::$id_dir = self::id_dir_create_all($name_hashed);
+        self::rsa_init_key_dir(self::$id_dir->key);
+        self::cert_init_key_dir(self::$id_dir->cert);
+        self::pgp_init_key_dir(self::$id_dir->pgp);
+        self::seed_init_key_dir(self::$id_dir->seed);
         self::rsa_init();
         self::cert_init(self::hash($info->countryName), self::hash($info->stateOrProvinceName),
           self::hash($info->localityName), self::hash($info->organizationName), self::hash($info->organizationalUnitName),
@@ -88,44 +81,29 @@ trait Id_simple {
         return $crypted_key_keys;
     }
 
-    public static function id_dir_create(string $dir, string $n, string $dn): bool{
+    public static function id_dir_create_all(string $n):stdClass {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
-
-        $dir = $dn.'/'.self::$id_data_dir_global.'/'.$dir.'/'.$n;
-
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir);
-
-        if(is_dir($dir) === false) return mkdir($dir, 777, true);
-
-        return true;
-    }
-
-    public static function id_dir_create_all(string $n, string $dn):stdClass {
-
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
-
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$id_dir_list);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
         $dir = new stdClass();
 
         foreach(self::$id_dir_list as $v) {
 
-            $dir->$v = self::id_dir_create($v, $n, $dn);
+            $dir->$v = Env::dir_create($v, $n);
         }
         return $dir;
     }
 
     public static function id_session_get_from_otp():stdClass {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_otp();
 
         $id_hashed = self::hash($info->password.$info->id_name);
         $file = self::$id_dir_global.'/'.$info->id_hashed.'.json';
 
-        if(is_file($file) === false) e('Id not found');
+        if(is_file($file) === false) Env::e('Id not found');
 
         self::otp_verify($file, $info->otp_id, $info->otp_name);
 
@@ -149,7 +127,7 @@ trait Id_simple {
 
     public static function id_session_init():string {
 
-      l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+      Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
       $otpCreate = Request::info_from_get('otpCreate');
 
@@ -175,9 +153,9 @@ trait Id_simple {
 
     public static function id_session_otp_create():stdClass {
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-        $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
+        $i = Env::file_get_contents_json(self::$id_node_file);
         $anon = '_'.uniqid();
         $i->n .= $anon;
         $i->countryName .= $anon;
