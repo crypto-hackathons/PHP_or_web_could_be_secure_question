@@ -122,7 +122,7 @@ trait Id_simple {
         $id_hashed = self::hash($info->password.$info->id_name);
         $file = self::$id_dir_global.'/'.$info->id_hashed.'.json';
 
-        if(is_file($file) === false) error('Id not found');
+        if(is_file($file) === false) e('Id not found');
 
         self::otp_verify($file, $info->otp_id, $info->otp_name);
 
@@ -176,10 +176,19 @@ trait Id_simple {
 
         $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
         $anon = '_'.uniqid();
+        $i->n .= $anon;
+        $i->countryName .= $anon;
+        $i->stateOrProvinceName .= $anon;
+        $i->localityName .= $anon;
+        $i->organizationName .= $anon;
+        $i->organizationalUnitName .= $anon;
+        $i->commonName .= $anon;
+        $i->emailAddress .= $anon;
+        $i->telNumber .= $anon;
+        $i->password .= $anon;
+        $i->pgp_passphrase .= $anon;
 
-        Request_from_id::build(build($i->n.$anon, $i->countryName, $i->stateOrProvinceName, $i->localityName, $i->organizationName,
-          $i->organizationalUnitName, $i->commonName, $i->emailAddress.$anon, $i->telNumber.$anon, $i->password.$anon, $i->pgp_passphrase.$anon,
-          $i->id_lang, $i->id_timezone, $i->wordlist_file, $i->crypt_pgp_state, $i->conf, $i->definition));
+        Request_from_id::build($i);
 
         return self::id_session_otp_create_from_info();
     }

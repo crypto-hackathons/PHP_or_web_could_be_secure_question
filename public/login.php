@@ -27,7 +27,7 @@ require_once('../lib/crypto_simple_obj_cipher.php');
 require_once('../lib/hash_simple_obj_array_hashed.php');
 require_once('../lib/opt_simple_obj_key_crypted_parts.php');
 
-function error(string $error, string $error_redirect = 'location: login.php?error='){
+function e(string $error, string $error_redirect = 'location: login.php?error='){
 
     header($error_redirect.$error);
     exit;

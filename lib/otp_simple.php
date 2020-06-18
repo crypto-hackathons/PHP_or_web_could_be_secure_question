@@ -57,9 +57,9 @@ trait Otp_simple {
 			self::$otp_name = $otp_name;
 		}
 
-		if($otp_id !== self::$otp_id)  error('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) error('Otp timeout');
-		if(self::$otp_name !== $otp_name) error('Otp name');
+		if($otp_id !== self::$otp_id)  e('Otp error.');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) e('Otp timeout');
+		if(self::$otp_name !== $otp_name) e('Otp name');
 
 		self::$otp_id = uniqid();
 		self::$otp_time = time();
@@ -97,7 +97,7 @@ trait Otp_simple {
 
 		$file_otp = self::$otp_dir.basename($file);
 
-		if(is_file($file_otp) === false) error('Otp not found');
+		if(is_file($file_otp) === false) e('Otp not found');
 
 		$i = explode(';', file_get_contents($file_otp));
 		self::$otp_file = trim($i[0]);
@@ -106,9 +106,9 @@ trait Otp_simple {
 		self::$otp_id = trim($i[3]);
 		self::$otp_name = trim($i[4]);
 
-		if($otp_id !== self::$otp_id)  error('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) error('Otp timeout');
-		if(self::$otp_name !== $otp_name) error('Otp name');
+		if($otp_id !== self::$otp_id)  e('Otp error.');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) e('Otp timeout');
+		if(self::$otp_name !== $otp_name) e('Otp name');
 
 		return true;
 	}
