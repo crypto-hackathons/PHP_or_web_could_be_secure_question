@@ -9,7 +9,7 @@ class Hash_simple_obj_array_hashed {
 
    public function __construct(array $array, $hash_prefix = false) {
 
-         log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+         l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
          $keys = array_keys($array);
 

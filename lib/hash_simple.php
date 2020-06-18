@@ -12,7 +12,7 @@ Trait Hash_simple {
 
     public static function hash_init():bool {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         self::$hash_prefix = hash(self::$hash_algo, self::file_get_contents(self::$seed_grain_file));
 
@@ -21,7 +21,7 @@ Trait Hash_simple {
 
     public static function hash(string $data, $hash_prefix = false):string {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         if($hash_prefix === false) $hash_prefix = self::$hash_prefix;
 
@@ -29,8 +29,8 @@ Trait Hash_simple {
     }
 
     public static function hash_array(array $array, $hash_prefix = false):Hash_simple_obj_array_hashed {
-      
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         if($hash_prefix === false) $hash_prefix = self::$hash_prefix;
 

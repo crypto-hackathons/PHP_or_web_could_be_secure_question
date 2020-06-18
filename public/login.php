@@ -33,9 +33,9 @@ function error(string $error, string $error_redirect = 'location: login.php?erro
     exit;
 }
 
-function log(string $msg, string $eol = '<br>') {
+function l(string $msg, $info = '', string $eol = '<br>') {
 
-    echo $msg.$eol;
+    echo $msg.' --- '.json_encode($info).$eol;
 }
 
 class Distribute {

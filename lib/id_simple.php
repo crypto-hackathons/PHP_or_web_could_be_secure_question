@@ -25,7 +25,7 @@ trait Id_simple {
 
     public function id_session_otp_create_from_info():stdClass {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_id();
 
@@ -91,7 +91,7 @@ trait Id_simple {
 
     public static function id_dir_create(string $dir, string $n, string $dn): bool{
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
         $dir = $dn.'/'.self::$id_data_dir_global.'/'.$dir.'/'.$n;
 
@@ -102,7 +102,7 @@ trait Id_simple {
 
     public static function id_dir_create_all(string $n, string $dn):stdClass {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
         $dir = new stdClass();
 
@@ -115,7 +115,7 @@ trait Id_simple {
 
     public static function id_session_get_from_otp():stdClass {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_otp();
 
@@ -146,10 +146,15 @@ trait Id_simple {
 
     public static function id_session_init():string {
 
-      log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+      l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
       $otpCreate = Request::info_from_get('otpCreate');
+
+      if(empty($otpCreate) === true) $otpCreate = false;
+
       $otp = Request::info_from_get('otp');
+
+      if(empty($otp) === true) $otp = false;
 
       if($otpCreate === true) {
 
@@ -164,9 +169,10 @@ trait Id_simple {
          return self::id_session_otp_create();
       }
     }
-    public function id_session_otp_create():stdClass {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    public static function id_session_otp_create():stdClass {
+
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
         $anon = '_'.uniqid();

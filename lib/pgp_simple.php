@@ -12,7 +12,7 @@ trait Ppg_simple {
 
     private static function pgp_init(string $pgp_passphrase):bool {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         putenv('GNUPGHOME='.self::$pgp_env);
 
@@ -24,14 +24,14 @@ trait Ppg_simple {
 
     private static function pgp_passphrase_get():string {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$pgp_passphrase_file);
     }
 
     public function pgp_crypt(string $msg, string $rsa_public_key):string {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $session_key = hash(self::$rsa_digest_alg, self::rsa_public_key_get() . time() . uniqid());
 
@@ -50,7 +50,7 @@ trait Ppg_simple {
 
     public function pgp_uncrypt(string $cypher, string $pgp_passphrase):string {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $cypher_parts = explode(self::$pgp_separator, $cypher);
         $msg_crypted = $cypher_parts[0];

@@ -22,16 +22,16 @@ class Request_from_id extends Request {
 
   public function __construct() {
 
-        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         parent::__construct();
   }
 
-  public function build(string $n, string $countryName, string $stateOrProvinceName, string $localityName, string $organizationName,
+  public static function build(string $n, string $countryName, string $stateOrProvinceName, string $localityName, string $organizationName,
     string $organizationalUnitName, string $commonName, string $emailAddress, string $telNumber, string $password, string $pgp_passphrase,
     string $id_lang, string $id_timezone, string $wordlist_file, string $crypt_pgp_state, string $conf, string $definition):Request_from_id {
-      
-    log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
+    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
     $_POST['n'] = $n;
     $_POST['countryName'] = $countryName;
