@@ -27,9 +27,9 @@ class Request_from_id extends Request {
         parent::__construct();
   }
 
-  public static function build(stdClass $i):Request_from_id {
+  public static function build(stdClass $i):array {
 
-    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
+    l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $i);
 
     $_POST['n'] = $i->n;
     $_POST['countryName'] = $i->countryName;
@@ -38,7 +38,7 @@ class Request_from_id extends Request {
     $_POST['organizationName'] = $i->organizationName;
     $_POST['organizationalUnitName'] = $i->organizationalUnitName;
     $_POST['commonName'] = $i->commonName;
-    $_POST['emailAddress'] = $i->$emailAddress;
+    $_POST['emailAddress'] = $i->emailAddress;
     $_POST['telNumber'] = $i->telNumber;
     $_POST['password'] = $i->password;
     $_POST['pgp_passphrase'] = $i->pgp_passphrase;

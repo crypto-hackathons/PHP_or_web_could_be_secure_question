@@ -2,7 +2,7 @@
 
 trait Id_simple {
 
-    use Hash_simple, Compress_simple, Rsa_simple, Crypto_simple;
+    use Hash_simple, Compress_simple, Rsa_simple, Crypto_simple, Cert_simple, Pgp_simple;
 
     public static $id_dir_global;
     public static $id_dir;
@@ -21,29 +21,28 @@ trait Id_simple {
     public static $id_private_key_crypted;
     public static $id_sign_private_key_crypted;
     public static $id_data_dir_global = '../data';
+    public static $id_data_dir_local = './';
     public static $id_dir_list = array('key', 'cert', 'pgp', 'seed', 'id');
 
-    public function id_session_otp_create_from_info():stdClass {
+    public static function id_session_otp_create_from_info():stdClass {
 
         l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_id();
-
-        $dn = './';
+        $id_dir = self::id_dir_create_all($info->n, self::$id_data_dir_local);
         self::hash_init();
         self::$id_name = $info->n;
         $name_hashed =  self::hash($info->n);
-        self::$id_dir = self::id_dir_create_all($info->name_hashed , $dn);
-        self::$rsa_public_key_file = self::$id_dir->key_dir.'/private.pem';
-        self::$rsa_private_key_file = self::$id_dir->key_dir.'/public.pem';
-        self::$cert_csr_file = self::$id_dir->cert_dir.'/src.pem';
-        self::$cert_x509_file = self::$id_dir->cert_dir.'/x509.pem';
-        self::$cert_pkey_file = self::$id_dir->cert_dir.'/private_pwd.pem';
-        self::$pgp_env = self::$id_dir->pgp_dir.'/.gnupg';
-        self::$pgp_passphrase_file = self::$id_dir->pgp_dir.'/passphrase.pgp';
-        self::$seed_private_key_master_dir = self::$id_dir->seed_dir.'/';
-        self::$seed_grain_file = self::$id_dir->seed_dir.'/grain.txt';
-        self::$crypt_pgp_state = $info->crypt_pgp_state;
+        self::$id_dir = self::id_dir_create_all($name_hashed , self::$id_data_dir_local);
+        self::$rsa_public_key_file = $id_dir->key.'/private.pem';
+        self::$rsa_private_key_file = self::$id_dir->key.'/public.pem';
+        self::$cert_csr_file = self::$id_dir->cert.'/src.pem';
+        self::$cert_x509_file = self::$id_dir->cert.'/x509.pem';
+        self::$cert_pkey_file = self::$id_dir->cert.'/private_pwd.pem';
+        self::$pgp_env = self::$id_dir->pgp.'/.gnupg';
+        self::$pgp_passphrase_file = self::$id_dir->pgp.'/passphrase.pgp';
+        self::$seed_private_key_master_dir = self::$id_dir->seed.'/';
+        self::$seed_grain_file = self::$id_dir->seed.'/grain.txt';
         self::rsa_init();
         self::cert_init(self::hash($info->countryName), self::hash($info->stateOrProvinceName),
           self::hash($info->localityName), self::hash($info->organizationName), self::hash($info->organizationalUnitName),
@@ -80,7 +79,7 @@ trait Id_simple {
 
         // clear
         $id = new Id($info->definition, $info->conf, self::$id_lang, self::$id_timezone, self::$id_commonName,
-          self::$id_public_key, json_encode(get_class_vars(get_class($this))), self::$id_sign_public_key);
+          self::$id_public_key, json_encode(get_class_vars(get_called_class())), self::$id_sign_public_key);
 
         $data = self::audit_object($id, $id->sign->sign_public_key, self::$otp_id);
 
@@ -95,6 +94,8 @@ trait Id_simple {
 
         $dir = $dn.'/'.self::$id_data_dir_global.'/'.$dir.'/'.$n;
 
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir);
+
         if(is_dir($dir) === false) return mkdir($dir, 777, true);
 
         return true;
@@ -104,11 +105,13 @@ trait Id_simple {
 
         l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$id_dir_list);
+
         $dir = new stdClass();
 
-        foreach(self::$id_dir_list as $k => $v) {
+        foreach(self::$id_dir_list as $v) {
 
-            $dir->$k = self::id_dir_create($v, $n, $dn);
+            $dir->$v = self::id_dir_create($v, $n, $dn);
         }
         return $dir;
     }
@@ -187,6 +190,8 @@ trait Id_simple {
         $i->telNumber .= $anon;
         $i->password .= $anon;
         $i->pgp_passphrase .= $anon;
+        $i->conf = json_encode($i->conf);
+        $i->definition = json_encode($i->definition);
 
         Request_from_id::build($i);
 

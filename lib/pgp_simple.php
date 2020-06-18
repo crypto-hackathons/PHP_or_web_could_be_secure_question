@@ -1,6 +1,6 @@
 <?php
 
-trait Ppg_simple {
+trait Pgp_simple {
 
     use Rsa_simple;
 

@@ -43,11 +43,11 @@ class Request {
 
       public function __construct(){
 
-        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $name);
+        l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         foreach($this as $k => $v) {
 
-            self::id_info_from_post_request($k);
+            self::info_from_post_request($k);
         }
       }
 }

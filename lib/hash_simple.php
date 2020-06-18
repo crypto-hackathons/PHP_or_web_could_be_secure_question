@@ -14,7 +14,7 @@ Trait Hash_simple {
 
         l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-        self::$hash_prefix = hash(self::$hash_algo, self::file_get_contents(self::$seed_grain_file));
+        self::$hash_prefix = hash(self::$hash_algo, file_get_contents(self::$seed_grain_file));
 
         return true;
     }
