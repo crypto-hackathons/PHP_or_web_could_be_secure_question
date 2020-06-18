@@ -136,7 +136,7 @@ trait Id_simple {
         return $id;
     }
 
-    public static function id_session_init(s):string {
+    public static function id_session_init():string {
 
       $otpCreate = self::id_info_from_post_request('otpCreate');
       $otp = self::id_info_from_post_request('otp');
@@ -151,13 +151,13 @@ trait Id_simple {
       }
       elseif($otp === false) {
 
-         return self::id_otp_create($conf, $node, $definition);
+         return self::id_otp_create();
       }
     }
-    public function id_otp_create() {
+    public function id_otp_create():stdClass {
 
         $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
-        $anon = uniqid();
+        $anon = '_'.uniqid();
 
         Request_from_id::build(build($i->n.$anon, $i->countryName, $i->stateOrProvinceName, $i->localityName, $i->organizationName,
           $i->organizationalUnitName, $i->commonName, $i->emailAddress.$anon, $i->telNumber.$anon, $i->password.$anon, $i->pgp_passphrase.$anon,

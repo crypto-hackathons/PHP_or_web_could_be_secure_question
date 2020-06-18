@@ -4,8 +4,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once('../lib/crypto_simple_obj_cipher.php');
-require_once('../lib/hash_simple_obj_array_hashed.php');
 require_once('../lib/rsa_simple.php');
 require_once('../lib/cert_simple.php');
 require_once('../lib/pgp_simple.php');
@@ -17,6 +15,14 @@ require_once('../lib/audit_simple.php');
 require_once('../lib/id_simple.php');
 require_once('../lib/crypto_simple.php');
 require_once('../lib/merkle_tree_simple.php');
+
+require_once('../lib/id_simple_obj_id.php');
+require_once('../lib/id_simple_obj_request.php');
+require_once('../lib/id_simple_obj_reques_from_id.php');
+require_once('../lib/id_simple_obj_reques_from_otp.php');
+require_once('../lib/crypto_simple_obj_cipher.php');
+require_once('../lib/hash_simple_obj_array_hashed.php');
+require_once('../lib/opt_simple_obj_key_crypted_parts.php');
 
 function error(string $error){
 
@@ -55,5 +61,3 @@ $day_list[7] = 'Dimanche';
 $conf = new stdClass();
 $conf->month_list = $month_list;
 $conf->day_list = $day_list;
-
-$node = $d->id_get($node_id_hash);
