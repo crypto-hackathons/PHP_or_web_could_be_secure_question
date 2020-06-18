@@ -23,7 +23,7 @@ trait Id_simple {
     public static $id_data_dir_global = '../data';
     public static $id_dir_list = array('key', 'cert', 'pgp', 'seed', 'id');
 
-    public function id_otp_create_from_info():stdClass {
+    public function id_session_otp_create_from_info():stdClass {
 
         $info = new Request_from_id();
 
@@ -107,7 +107,7 @@ trait Id_simple {
         return $dir;
     }
 
-    public static function id_get_from_otp():stdClass {
+    public static function id_session_get_from_otp():stdClass {
 
         $info = new Request_from_otp();
 
@@ -143,18 +143,18 @@ trait Id_simple {
 
       if($otpCreate === true) {
 
-          return self::id_otp_create_from_info();
+          return self::id_session_otp_create_from_info();
       }
       elseif($otp === true) {
 
-          return self::id_get_from_otp();
+          return self::id_session_get_from_otp();
       }
       elseif($otp === false) {
 
-         return self::id_otp_create();
+         return self::id_session_otp_create();
       }
     }
-    public function id_otp_create():stdClass {
+    public function id_session_otp_create():stdClass {
 
         $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
         $anon = '_'.uniqid();

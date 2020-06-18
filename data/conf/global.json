@@ -1,0 +1,98 @@
+{
+  "month_list": [
+      {
+        "index": 1,
+        "label": "Janvier"
+      },
+      {
+        "index": 1,
+        "label": "Janvier"
+      },
+      {
+        "index": 1,
+        "label": "Janvier"
+      },
+      {
+        "index": 1,
+        "label": "Janvier"
+      },
+      {
+        "index": 1,
+        "label": "Janvier"
+      },
+      {
+        "index": 2,
+        "label": "Février"
+      },
+      {
+        "index": 3,
+        "label": "Mars"
+      },
+      {
+        "index": 4,
+        "label": "Avril"
+      },
+      {
+        "index": 5,
+        "label": "Mai"
+      },
+      {
+        "index": 6,
+        "label": "Juin"
+      },
+      {
+        "index": 7,
+        "label": "Juillet"
+      },
+      {
+        "index": 8,
+        "label": "Aout"
+      },
+      {
+        "index": 9,
+        "label": "Septembre"
+      },
+      {
+        "index": 10,
+        "label": "Octobre"
+      },
+      {
+        "index": 11,
+        "label": "Novembre"
+      },
+      {
+        "index": 12,
+        "label": "Décembre"
+      }
+  ],
+  "day_list": [
+    {
+      "index": 1,
+      "label": "Lundi"
+    },
+    {
+      "index": 2,
+      "label": "Mardi"
+    },
+    {
+      "index": 3,
+      "label": "Mercredi"
+    },
+    {
+      "index": 4,
+      "label": "Jeudi"
+    },
+    {
+      "index": 5,
+      "label": "Vendredi"
+    },
+    {
+      "index": 6,
+      "label": "Samedi"
+    },
+    {
+      "index": 7,
+      "label": "Dimanche"
+    }
+  ]
+}

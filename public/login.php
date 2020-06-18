@@ -32,32 +32,7 @@ function error(string $error){
 class Distribute {
 
     use Crypto_simple;
-
 }
-$node_id_hash = ';';
+$conf = json_decode(file_get_contents('../data/conf/global.json'));
 $d = new Distribute();
-
-$month_list[1] = 'Janvier';
-$month_list[2] = 'Février';
-$month_list[3] = 'Mars';
-$month_list[4] = 'Avril';
-$month_list[5] = 'Mai';
-$month_list[6] = 'Juin';
-$month_list[7] = 'Juillet';
-$month_list[8] = 'Aout';
-$month_list[9] = 'Septembre';
-$month_list[10] = 'Octobre';
-$month_list[11] = 'Novembre';
-$month_list[12] = 'Décembre';
-
-$day_list[1] = 'Lundi';
-$day_list[2] = 'Mardi';
-$day_list[3] = 'Mercredi';
-$day_list[4] = 'Jeudi';
-$day_list[5] = 'Vendredi';
-$day_list[6] = 'Samedi';
-$day_list[7] = 'Dimanche';
-
-$conf = new stdClass();
-$conf->month_list = $month_list;
-$conf->day_list = $day_list;
+$d::id_session_init($conf);
