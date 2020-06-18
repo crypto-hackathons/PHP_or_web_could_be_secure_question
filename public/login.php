@@ -37,7 +37,6 @@ class Distribute {
     use Crypto_simple;
 }
 $conf = json_decode(file_get_contents('../data/conf/global.json'));
-var_dump($conf);
-exit();
+
 $d = new Distribute();
 $d::id_session_init($conf);
