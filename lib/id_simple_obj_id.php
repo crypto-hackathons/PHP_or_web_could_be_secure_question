@@ -11,6 +11,8 @@ class Id {
   public function __construct(stdClass $definition, stdClass $conf, string $id_lang, string $id_timezone, string $id_commonName,
   string $id_public_key, array $private_info_list, string $id_sign_public_key, string $otp_private_key_crypted, string $otp_sign_private_key_crypted){
 
+    log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
     $this->definition = $definition;
     $this->conf = $conf;
     $this->conf->id_lang = $id_lang;

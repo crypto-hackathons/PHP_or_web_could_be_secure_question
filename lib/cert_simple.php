@@ -14,6 +14,8 @@ trait Cert_simple {
 
     public static function cert_client_set(string $cert_client):bool {
 
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
         self::$cert_client = $cert_client;
 
         return true;
@@ -26,6 +28,8 @@ trait Cert_simple {
                                      string $organizationalUnitName,
                                      string $commonName,
                                      string $emailAddress, string $password):bool {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         self::$cert_user_data = array(
         'countryName' => $countryName,
@@ -58,6 +62,8 @@ trait Cert_simple {
     }
 
     public static function cert_client_sign(): bool{
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $usercert = openssl_csr_sign(self::$cert_client, self::cert_x509_get(), self::rsa_private_key_get(), self::$rsa_key_days);
 

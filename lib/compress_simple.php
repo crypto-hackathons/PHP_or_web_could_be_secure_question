@@ -9,6 +9,8 @@ trait Compress_simple {
 
     public static function compress(string $msg):string {
 
+      log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
       if(self::$compress_state === true) {
 
         $msg = gzcompress($msg,  self::$compress_level);
@@ -17,6 +19,8 @@ trait Compress_simple {
     }
 
     public static function uncompress(string $msg):string {
+
+      log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
       if(self::$compress_state === true) {
 

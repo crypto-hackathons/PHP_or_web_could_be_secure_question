@@ -11,8 +11,9 @@ Trait Sign_simple
 
     public $sign_public_key;
 
-    public function sign_init():bool
-    {
+    public function sign_init():bool {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $private_key_res = openssl_pkey_new(array(
             "private_key_bits" => self::$sign_private_key_bits,
@@ -27,8 +28,9 @@ Trait Sign_simple
         return true;
     }
 
-    public function sign(string $data):string
-    {
+    public function sign(string $data):string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $private_key_res = $this->sign_private_key_get();
         $signature = openssl_sign($data, $signature, $private_key_res, self::$sign_algo);
@@ -36,14 +38,16 @@ Trait Sign_simple
         return $signature;
     }
 
-    public static function sign_private_key_get()
-    {
+    public static function sign_private_key_get():string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$sign_private_key_file);
     }
 
-    public function sign_verify(string $data, string $signature, $public_key_res = false):bool
-    {
+    public function sign_verify(string $data, string $signature, $public_key_res = false):bool {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         if ($public_key_res === false) {
 
@@ -56,8 +60,9 @@ Trait Sign_simple
         return false;
     }
 
-    public static function sign_public_key_get():strung
-    {
+    public static function sign_public_key_get():string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$sign_public_key_file);
     }

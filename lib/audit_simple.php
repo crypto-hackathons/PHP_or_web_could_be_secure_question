@@ -6,6 +6,8 @@ trait Audit_simple {
 
   function audit_object(stdClass $object, string $sign_public_key, $otp_id = false):string {
 
+    log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
     $data = json_encode($object);
     $object->out = new stdClass();
 
@@ -31,6 +33,8 @@ trait Audit_simple {
   }
 
   function audit_verify(string $data, $otp_id = false):stdClass {
+
+    log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
     $data = self::uncompress($data);
     $object = json_decode($data);

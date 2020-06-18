@@ -27,11 +27,17 @@ require_once('../lib/crypto_simple_obj_cipher.php');
 require_once('../lib/hash_simple_obj_array_hashed.php');
 require_once('../lib/opt_simple_obj_key_crypted_parts.php');
 
-function error(string $error){
+function error(string $error, string $error_redirect = 'location: login.php?error='){
 
-    header("location: login.php?error=".$error);
+    header($error_redirect.$error);
     exit;
 }
+
+function log(string $msg, string $eol = '<br>') {
+
+    echo $msg.$eol;
+}
+
 class Distribute {
 
     use Crypto_simple, Id_simple;

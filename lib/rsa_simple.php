@@ -11,8 +11,9 @@ trait Rsa_simple
 
     public $rsa_public_key;
 
-    private static function rsa_init($name = 'mine')
-    {
+    private static function rsa_init($name = 'mine'):bool {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $config = array(
             'digest_alg' => self::$rsa_digest_alg,
@@ -32,13 +33,16 @@ trait Rsa_simple
         return true;
     }
 
-    public static function rsa_public_key_get(){
+    public static function rsa_public_key_get():striong {
+
+       log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
        return file_get_contents(self::$rsa_public_key_file);
     }
 
-    public static function rsa_crypt(string $msg, $rsa_public_key = false)
-    {
+    public static function rsa_crypt(string $msg, $rsa_public_key = false):string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         if ($rsa_public_key === false) $rsa_public_key = self::rsa_public_key_get();
 
@@ -57,13 +61,17 @@ trait Rsa_simple
     }
 
 
-    private static function rsa_private_key_get(){
+    private static function rsa_private_key_get():string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$rsa_private_key_file);
     }
 
-    public static function rsa_uncrypt(string $msg_crypted)
-    {
+    public static function rsa_uncrypt(string $msg_crypted):string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
         $rsa_private_key = self::rsa_private_key_get();
         $msg_decrypted = '';
 

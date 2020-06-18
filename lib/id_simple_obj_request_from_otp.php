@@ -9,7 +9,9 @@ class  Request_from_otp extends Request {
   public $sign_private_key_crypted_key = false;
   public $definition = false;
 
-    public function __construct(){
+    public function __construct() {
+
+      log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
       parent::__construct();
     }

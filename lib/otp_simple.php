@@ -22,11 +22,15 @@ trait Otp_simple {
 
 	public static function otp_hash(string $data):string {
 
+		log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
 		return self::hash($data, self::$otp_id);
 	}
 
 	public static function otp_set(string $file, string $otp_id, string $otp_name, string $id_emailAddress, string $id_telNumber, string $id_password,
 	string $id_pgp_passphrase, string $id_lang):Key_crypted_parts {
+
+		log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		$file_tmp = explode('.', basename($file));
 		$file_tmp_end = end($file_tmp);
@@ -88,6 +92,8 @@ trait Otp_simple {
 	}
 
   function otp_verify(string $file, string $otp_id, string $otp_name):bool {
+
+		log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		$file_otp = self::$otp_dir.basename($file);
 

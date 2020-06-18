@@ -12,6 +12,8 @@ Trait Crypto_simple {
 
     public static function crypto_crypt(string $plaintext):string {
 
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
         $key = openssl_random_pseudo_bytes(self::$crypto_key_size);
         $ivlen = openssl_cipher_iv_length(self::$crypto_cipher);
         $iv = openssl_random_pseudo_bytes($ivlen);
@@ -21,6 +23,8 @@ Trait Crypto_simple {
     }
 
     public static function crypto_uncrypt(string $cipher_back, string $cipher_key):string {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $cipher_back = Crypto_simple_obj_cipher::cipher_back_extract($cipher_back);
 

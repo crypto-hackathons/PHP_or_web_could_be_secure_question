@@ -25,6 +25,8 @@ trait Id_simple {
 
     public function id_session_otp_create_from_info():stdClass {
 
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
         $info = new Request_from_id();
 
         $dn = './';
@@ -89,6 +91,8 @@ trait Id_simple {
 
     public static function id_dir_create(string $dir, string $n, string $dn): bool{
 
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
         $dir = $dn.'/'.self::$id_data_dir_global.'/'.$dir.'/'.$n;
 
         if(is_dir($dir) === false) return mkdir($dir, 777, true);
@@ -97,6 +101,8 @@ trait Id_simple {
     }
 
     public static function id_dir_create_all(string $n, string $dn):stdClass {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $dir = new stdClass();
 
@@ -108,6 +114,8 @@ trait Id_simple {
     }
 
     public static function id_session_get_from_otp():stdClass {
+
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_otp();
 
@@ -138,6 +146,8 @@ trait Id_simple {
 
     public static function id_session_init():string {
 
+      log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
       $otpCreate = Request::info_from_get('otpCreate');
       $otp = Request::info_from_get('otp');
 
@@ -156,6 +166,8 @@ trait Id_simple {
     }
     public function id_session_otp_create():stdClass {
 
+        log(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
         $i = json_decode(file_get_contents(self::$id_data_dir_global.'/node/id.json'));
         $anon = '_'.uniqid();
 
@@ -163,6 +175,6 @@ trait Id_simple {
           $i->organizationalUnitName, $i->commonName, $i->emailAddress.$anon, $i->telNumber.$anon, $i->password.$anon, $i->pgp_passphrase.$anon,
           $i->id_lang, $i->id_timezone, $i->wordlist_file, $i->crypt_pgp_state, $i->conf, $i->definition));
 
-        return self::id_otp_create_from_info();
+        return self::id_session_otp_create_from_info();
     }
 }
