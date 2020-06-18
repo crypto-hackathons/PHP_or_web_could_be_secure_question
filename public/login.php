@@ -34,7 +34,7 @@ function error(string $error){
 }
 class Distribute {
 
-    use Crypto_simple;
+    use Crypto_simple, Id_simple;
 }
 $conf = json_decode(file_get_contents('../data/conf/global.json'));
 

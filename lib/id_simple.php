@@ -138,8 +138,8 @@ trait Id_simple {
 
     public static function id_session_init():string {
 
-      $otpCreate = self::id_info_from_post_request('otpCreate');
-      $otp = self::id_info_from_post_request('otp');
+      $otpCreate = Request::info_from_post_request('otpCreate');
+      $otp = Request::info_from_post_request('otp');
 
       if($otpCreate === true) {
 
