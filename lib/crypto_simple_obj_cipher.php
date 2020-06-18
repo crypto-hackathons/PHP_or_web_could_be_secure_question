@@ -22,6 +22,7 @@ class Crypto_simple_obj_cipher {
   public static function cipher_back_extract(string $compressed):stdClass {
 
       $data = self::compress(self::$compressed);
-      return json_decode(self::$data);
-    }
+
+      return json_decode($data);
+    }
 }

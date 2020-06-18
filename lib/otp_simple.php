@@ -54,7 +54,7 @@ trait Otp_simple {
 		}
 
 		if($otp_id !== self::$otp_id)  error('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time)) > self::$otp_timeout) error('Otp timeout');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) error('Otp timeout');
 		if(self::$otp_name !== $otp_name) error('Otp name');
 
 		self::$otp_id = uniqid();
@@ -97,11 +97,11 @@ trait Otp_simple {
 		self::$otp_file = trim($i[0]);
 		self::$otp_time = trim($i[1]);
 		self::$otp_timeout = trim($i[2]);
-		self::$otp_id = trim($i[3])
+		self::$otp_id = trim($i[3]);
 		self::$otp_name = trim($i[4]);
 
 		if($otp_id !== self::$otp_id)  error('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time)) > self::$otp_timeout) error('Otp timeout');
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) error('Otp timeout');
 		if(self::$otp_name !== $otp_name) error('Otp name');
 
 		return true;

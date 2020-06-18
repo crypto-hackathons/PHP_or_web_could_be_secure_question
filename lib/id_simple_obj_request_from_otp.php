@@ -12,8 +12,5 @@ class  Request_from_otp extends Request {
     public function __construct(){
 
       parent::__construct();
-
-      
-
     }
 }

@@ -7,7 +7,7 @@ class Hash_simple_obj_array_hashed {
    public $to_share = array();
    public $to_store = array();
 
-   public function __construct(array $array, $hash_prefix = false):stdClass {
+   public function __construct(array $array, $hash_prefix = false) {
 
          $keys = array_keys($array);
 

@@ -12,7 +12,7 @@ Trait Crypto_simple {
 
     public static function crypto_crypt(string $plaintext):string {
 
-        $key = openssl_random_pseudo_bytes(self::$crypto_key_size, true);
+        $key = openssl_random_pseudo_bytes(self::$crypto_key_size);
         $ivlen = openssl_cipher_iv_length(self::$crypto_cipher);
         $iv = openssl_random_pseudo_bytes($ivlen);
         $ciphertext = openssl_encrypt($plaintext, self::$crypto_cipher, $key, $options=0, $iv, $tag);

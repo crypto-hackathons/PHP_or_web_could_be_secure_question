@@ -1,6 +1,6 @@
 <?php
 
-class Request_from_id {
+class Request_from_id extends Request {
 
   public $n = false;
   public $countryName = false;
@@ -22,11 +22,9 @@ class Request_from_id {
 
   public function __construct() {
 
-      public function __construct(){
-
         parent::__construct();
-      }
   }
+
   public function build(string $n, string $countryName, string $stateOrProvinceName, string $localityName, string $organizationName,
     string $organizationalUnitName, string $commonName, string $emailAddress, string $telNumber, string $password, string $pgp_passphrase,
     string $id_lang, string $id_timezone, string $wordlist_file, string $crypt_pgp_state, string $conf, string $definition):Request_from_id {
