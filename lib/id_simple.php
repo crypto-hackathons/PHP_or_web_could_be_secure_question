@@ -5,7 +5,7 @@ trait Id_simple {
     use Crypto_simple, Hash_simple, Compress_simple, Rsa_simple, Crypto_simple, Cert_simple, Pgp_simple, Sign_simple, Otp_simple;
 
     public static $id_dir_global;
-    public static $id_dir;
+    public static $id_dir = 'id';
     public static $id_commonName;
     public static $id_name;
     public static $id_anon;
@@ -20,7 +20,6 @@ trait Id_simple {
     public static $id_word_hash;
     public static $id_private_key_crypted;
     public static $id_sign_private_key_crypted;
-    public static $id_dir_list = array('key', 'cert', 'pgp', 'seed', 'id');
     public static $id_node_file = 'node/id.json';
 
     public static function id_session_otp_create_from_info():stdClass {
@@ -50,11 +49,12 @@ trait Id_simple {
         self::$id_lang = $info->id_lang;
         self::$id_timezone = $info->id_timezone;
 
+        $dir = Env::dir_create(self::$id_dir, $info->n);
         $id_hashed = self::hash($info->password.self::$id_name);
-        $file = self::$id_dir->id_dir.'/'.$info->id_hashed.'.json';
+        $file = self::$id_dir.'/'.$info->n.'/'.$id_hashed.'.json';
 
-        $crypted_key_keys = self::otp_set($file, $info->otp_id, $info->id_emailAddress, $info->id_telNumber,
-          $info->id_password, $info->id_pgp_passphrase, $info->id_lang);
+        $crypted_key_keys = self::otp_set($file, uniqid(), self::$id_name, $info->emailAddress, $info->telNumber,
+          $info->password, $info->pgp_passphrase, $info->id_lang);
 
         // hasheed with otp
         self::$id_word_hash = self::$otp_word_hash;
@@ -77,7 +77,7 @@ trait Id_simple {
 
         $data = self::audit_object($id, $id->sign->sign_public_key, self::$otp_id);
 
-        file_put_contents($file, $data);
+        Env::file_put_contents($file, $data);
 
         return $crypted_key_keys;
     }

@@ -14,15 +14,20 @@ Trait Sign_simple
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-        $private_key_res = openssl_pkey_new(array(
+        $res = openssl_pkey_new(array(
             "private_key_bits" => self::$sign_private_key_bits,
             "private_key_type" => self::$sign_private_key_type,
         ));
 
-        Env::file_put_contents(self::$sign_private_key_file, $private_key_res);
+        openssl_pkey_export($res, $private_key);
 
-        $details = openssl_pkey_get_details($private_key_res);
-        $this->sign_public_key = openssl_pkey_get_public($details['key']);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$sign_private_key_file);
+
+        Env::file_put_contents(self::$sign_private_key_file, $private_key);
+
+        $details = openssl_pkey_get_details($res);
+
+        Env::file_put_contents(self::$sign_public_key_file, $details['key']);
 
         return true;
     }
@@ -31,7 +36,7 @@ Trait Sign_simple
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-        $private_key_res = $this->sign_private_key_get();
+        $private_key_res = self::sign_private_key_get();
         $signature = openssl_sign($data, $signature, $private_key_res, self::$sign_algo);
 
         return $signature;
@@ -41,7 +46,7 @@ Trait Sign_simple
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-        return file_get_contents(self::$sign_private_key_file);
+        return Env::file_get_contents(self::$sign_private_key_file);
     }
 
     public static function sign_verify(string $data, string $signature, $public_key_res = false):bool {
@@ -50,7 +55,7 @@ Trait Sign_simple
 
         if ($public_key_res === false) {
 
-            $public_key_res = $this->sign_public_key_get();
+            $public_key_res = self::sign_public_key_get();
         }
         $res = openssl_verify($data, $signature, $public_key_res, self::$sign_algo);
 
@@ -63,7 +68,7 @@ Trait Sign_simple
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-        return file_get_contents(self::$sign_public_key_file);
+        return Env::file_get_contents(self::$sign_public_key_file);
     }
 
     public static function sign_init_key_dir(string $n) {
@@ -72,7 +77,7 @@ Trait Sign_simple
 
         $dir = Env::dir_create(self::$sign_dir, $n);
 
-        self::$sign_public_key_file = Env::file_set($dir.'/'.self::$sign_public_key_file);
-        self::$sign_private_key_file = Env::file_set($dir.'/'.self::$sign_private_key_file);
+        self::$sign_public_key_file = self::$sign_dir.'/'.$n.'/'.self::$sign_public_key_file;
+        self::$sign_private_key_file = self::$sign_dir.'/'.$n.'/'.self::$sign_private_key_file;
     }
 }
