@@ -34,7 +34,7 @@ trait Rsa_simple
         return true;
     }
 
-    public static function rsa_public_key_get():striong {
+    public static function rsa_public_key_get():string {
 
        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
@@ -90,7 +90,7 @@ trait Rsa_simple
 
         $dir = Env::dir_create(self::$rsa_dir, $n);
 
-        self::$rsa_public_key_file = Env::file_set($dir.'/'.self::$rsa_public_key_file);
-        self::$rsa_private_key_file = Env::file_set($dir.'/'.self::$rsa_private_key_file);
+        self::$rsa_public_key_file = Env::file_set(self::$rsa_dir.'/'.$n.'/'.self::$rsa_public_key_file);
+        self::$rsa_private_key_file = Env::file_set(self::$rsa_dir.'/'.$n.'/'.self::$rsa_private_key_file);
     }
 }

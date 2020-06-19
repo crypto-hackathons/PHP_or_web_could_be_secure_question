@@ -86,9 +86,9 @@ trait Cert_simple {
 
         $dir = Env::dir_create(self::$cert_dir, $n);
 
-        self::$cert_csr_file = Env::file_set($dir.'/'.self::$cert_csr_file);
-        self::$cert_x509_file = Env::file_set($dir.'/'.self::$cert_x509_file);
-        self::$cert_pkey_file = Env::file_set($dir.'/'.self::$cert_pkey_file);
+        self::$cert_csr_file = Env::file_set(self::$cert_dir.'/'.$n.'/'.self::$cert_csr_file);
+        self::$cert_x509_file = Env::file_set(self::$cert_dir.'/'.'/'.self::$cert_x509_file);
+        self::$cert_pkey_file = Env::file_set(self::$cert_dir.'/'.'/'.self::$cert_pkey_file);
     }
 
 }

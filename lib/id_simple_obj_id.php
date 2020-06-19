@@ -22,7 +22,7 @@ class Id {
     $this->cert->public_key = $id_public_key;
     $this->cert->sign_public_key = $id_sign_public_key;
 
-    $id->data = self::rsa_crypt($private_info_list, self::$id_public_key);
+    $this->data = self::rsa_crypt($private_info_list, self::$id_public_key);
 
     $this->data_cipher = new stdClass();
     $this->data_cipher->private_key_cipher = $otp_private_key_crypted;

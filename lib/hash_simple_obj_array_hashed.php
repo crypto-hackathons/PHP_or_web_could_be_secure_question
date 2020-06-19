@@ -19,6 +19,6 @@ class Hash_simple_obj_array_hashed {
 
              $this->to_share[$key] = $array[$key];
          }
-         foreach ($new as $k => $v) $this->to_store[$k] = self::hash($v, $hash_prefix);
+         foreach ($this->to_share as $k => $v) $this->to_store[$k] = self::hash($v, $hash_prefix);
    }
 }

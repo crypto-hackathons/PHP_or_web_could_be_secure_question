@@ -3,15 +3,14 @@
 Trait Sign_simple
 {
     public static $sign_dir = 'sign';
-    private static $sign_private_key_bits = 2048;
-    private static $sign_private_key_type = OPENSSL_KEYTYPE_RSA;
-    private static $sign_algo = OPENSSL_ALGO_SHA1;
-    private static $sign_public_key_file = 'private.pem';
-    private static $sign_private_key_file = 'public.pem';
+    public static $sign_private_key_bits = 2048;
+    public static $sign_private_key_type = OPENSSL_KEYTYPE_RSA;
+    public static $sign_algo = OPENSSL_ALGO_SHA1;
+    public static $sign_public_key_file = 'private.pem';
+    public static $sign_private_key_file = 'public.pem';
+    public static $sign_public_key;
 
-    public $sign_public_key;
-
-    public function sign_init():bool {
+    public static function sign_init():bool {
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
@@ -20,7 +19,7 @@ Trait Sign_simple
             "private_key_type" => self::$sign_private_key_type,
         ));
 
-        file_put_contents(self::$sign_private_key_file, $private_key_res);
+        Env::file_put_contents(self::$sign_private_key_file, $private_key_res);
 
         $details = openssl_pkey_get_details($private_key_res);
         $this->sign_public_key = openssl_pkey_get_public($details['key']);
@@ -28,7 +27,7 @@ Trait Sign_simple
         return true;
     }
 
-    public function sign(string $data):string {
+    public static function sign(string $data):string {
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
@@ -45,7 +44,7 @@ Trait Sign_simple
         return file_get_contents(self::$sign_private_key_file);
     }
 
-    public function sign_verify(string $data, string $signature, $public_key_res = false):bool {
+    public static function sign_verify(string $data, string $signature, $public_key_res = false):bool {
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
@@ -69,7 +68,7 @@ Trait Sign_simple
 
     public static function sign_init_key_dir(string $n) {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE_, $n);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
         $dir = Env::dir_create(self::$sign_dir, $n);
 

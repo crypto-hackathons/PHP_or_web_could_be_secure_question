@@ -1,5 +1,8 @@
 {
-  "month_list": [
+   "display_errors": true,
+   "display_startup_errors": true,
+   "error_reporting": "*",
+   "month_list": [
       {
         "index": 1,
         "label": "Janvier"

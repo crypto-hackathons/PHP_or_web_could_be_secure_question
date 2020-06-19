@@ -80,12 +80,12 @@ trait Otp_simple {
 		$otp_private_key = self::rsa_private_key_get();
 		$crypto_crypt = self::crypto_crypt(self::$otp_private_key);
 		self::$otp_private_key_crypted = $crypto_crypt->cipher_back;
-		$private_cipher_back_key = $cipher_back->key;
+		$private_cipher_back_key = $crypto_crypt->cipher_back->key;
 
 		$otp_sign_private_key = self::sign_private_key_get();
 		$crypto_crypt = self::crypto_crypt(self::$otp_sign_private_key);
 		self::$otp_sign_private_key_crypted = $crypto_crypt->cipher_back;
-		$sign_private_cipher_back_key = $cipher_back->key;
+		$sign_private_cipher_back_key = $crypto_crypt->key;
 
 		return new Key_crypted_parts($private_cipher_back_key, $sign_private_cipher_back_key);
 	}

@@ -2,7 +2,7 @@
 
 trait Id_simple {
 
-    use Crypto_simple, Hash_simple, Compress_simple, Rsa_simple, Crypto_simple, Cert_simple, Pgp_simple;
+    use Crypto_simple, Hash_simple, Compress_simple, Rsa_simple, Crypto_simple, Cert_simple, Pgp_simple, Sign_simple, Otp_simple;
 
     public static $id_dir_global;
     public static $id_dir;
@@ -32,7 +32,7 @@ trait Id_simple {
         self::hash_init();
         self::$id_name = $info->n;
         $name_hashed =  self::hash($info->n);
-        self::sign_init_dir($info->n);
+        self::sign_init_key_dir($info->n);
         self::otp_init_dir($info->n);
         self::rsa_init_key_dir($info->n);
         self::cert_init_key_dir($info->n);
@@ -108,18 +108,18 @@ trait Id_simple {
 
         self::otp_verify($file, $info->otp_id, $info->otp_name);
 
-        $data = file_get_contents($file);
-
+        $data = Env::file_get_contents($file);
+        $id = Env::file_get_contents_json($file);
         $id->cert->public_key = self::$id_public_key;
         $id->cert->sign_public_key = self::$id_sign_public_key;
 
-        $id = audit_verify($data, self::$otp_id);
+        $id = self::audit_verify($data, self::$otp_id);
 
         $id->data_cipher->private_key_cipher = self::$otp_private_key_crypted;
         $id->data_cipher->sign_private_key_cipher = self::$otp_sign_private_key_crypted;
 
-        self::$otp_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $private_key_crypted_key);
-        self::$otp_sign_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $sign_private_key_crypted_key);
+        self::$otp_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $id->data_cipher->private_key_cipher);
+        self::$otp_sign_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $id->data_cipher->sign_private_key_cipher);
 
         $id->data = self::rsa_uncrypt($id);
 

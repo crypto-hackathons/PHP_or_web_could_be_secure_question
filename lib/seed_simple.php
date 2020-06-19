@@ -20,13 +20,14 @@ trait Seed_simple
     private static $seed_entropy_algo = 'sha512'; // 128 bits
     public static $seed_word_list;
     public static $seed_mnemonic;
+    public static $seed_hash_prefix;
 
     public static function seed_init(string $wordlist_file):bool {
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         self::$seed_hash_prefix = hash('sha256', Env::file_get_contents(self::$seed_grain_file));
-        self::$seed_word_list = Env::file_get_contents_json($wordlist_file);
+        self::$seed_word_list = Env::file_get_contents_json(self::$word_dir.'/'.$wordlist_file.'.json');
 
         return true;
     }
@@ -174,13 +175,13 @@ trait Seed_simple
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
         $dir = Env::dir_create(self::$seed_dir, $n);
-        Env::dir_create($dir.'/'.self::$word_dir, $n);
+        Env::dir_create(self::$seed_dir.self::$word_dir, $n);
 
         $data = Env::file_get_contents(self::$seed_dir.'/'.self::$seed_grain_file);
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $data);
 
-        self::$seed_grain_file = $dir.'/'.basename(self::$seed_grain_file);
+        self::$seed_grain_file = self::$seed_dir.'/'.$n.'/'.basename(self::$seed_grain_file);
 
         Env::file_put_contents(self::$seed_grain_file, $data);
 
