@@ -25,20 +25,20 @@ trait Rsa_simple
 
         openssl_pkey_export($res, $privKey);
 
-        file_put_contents(self::$rsa_private_key_file, $privKey);
+        Env::file_put_contents(self::$rsa_private_key_file, $privKey);
 
         $pubKey = openssl_pkey_get_details($res);
 
-        file_put_contents(self::$rsa_public_key_file, $pubKey["key"]);
+        Env::file_put_contents(self::$rsa_public_key_file, $pubKey["key"]);
 
         return true;
     }
 
     public static function rsa_public_key_get():string {
 
-       Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$rsa_public_key_file);
 
-       return file_get_contents(self::$rsa_public_key_file);
+       return Env::file_get_contents(self::$rsa_public_key_file);
     }
 
     public static function rsa_crypt(string $msg, $rsa_public_key = false):string {
@@ -64,9 +64,9 @@ trait Rsa_simple
 
     private static function rsa_private_key_get():string {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$rsa_private_key_file);
 
-        return file_get_contents(self::$rsa_private_key_file);
+        return Env::file_get_contents(self::$rsa_private_key_file);
     }
 
     public static function rsa_uncrypt(string $msg_crypted):string {
@@ -90,7 +90,7 @@ trait Rsa_simple
 
         $dir = Env::dir_create(self::$rsa_dir, $n);
 
-        self::$rsa_public_key_file = Env::file_set(self::$rsa_dir.'/'.$n.'/'.self::$rsa_public_key_file);
-        self::$rsa_private_key_file = Env::file_set(self::$rsa_dir.'/'.$n.'/'.self::$rsa_private_key_file);
+        self::$rsa_public_key_file = self::$rsa_dir.'/'.$n.'/'.self::$rsa_public_key_file;
+        self::$rsa_private_key_file = self::$rsa_dir.'/'.$n.'/'.self::$rsa_private_key_file;
     }
 }

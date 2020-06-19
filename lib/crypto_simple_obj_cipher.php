@@ -2,20 +2,28 @@
 
 class Crypto_simple_obj_cipher {
 
+  Use Compress_simple;
+
   public $key;
   public $cipher_back;
 
   public function __construct(string $ciphertext, string $iv, string $tag, string $key) {
 
-    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $ciphertext);
 
     $cipher_back = new stdClass();
     $cipher_back->ciphertext = $ciphertext;
     $cipher_back->iv = $iv;
     $cipher_back->tag = $tag;
 
-    $cipher_back = json_encode(self::$cipher_back);
-    $cipher_back = self::compress(self::$cipher_back);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $cipher_back);
+
+    $cipher_back = json_encode($cipher_back);
+    if($cipher_back === false) Env::e('Error Json encoding');
+
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $cipher_back);
+
+    $cipher_back = self::compress($cipher_back);
 
     $this->key = $key;
     $this->cipher_back = $cipher_back;

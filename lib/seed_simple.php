@@ -62,6 +62,8 @@ trait Seed_simple
         $file = self::$seed_private_key_master_dir.'/'.$seed_private_key_master_str->private_key_master.'_private_key_master.key';
         $data = json_encode($seed_private_key_master_str);
 
+        if($data === false) Env::e('Error Json encoding');
+
         Env::file_put_contents($file, $data);
 
         return $data;
@@ -108,7 +110,7 @@ trait Seed_simple
 
     private static function seed_grain_get():string {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$seed_grain_file);
 
         $grain = Env::file_get_contents(self::$seed_grain_file);
 

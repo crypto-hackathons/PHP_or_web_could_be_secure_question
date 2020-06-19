@@ -2,7 +2,7 @@
 
 trait Otp_simple {
 
-	use Rsa_Simple, Hash_simple, Sign_simple;
+    use Rsa_Simple, Hash_simple, Sign_simple, Crypto_simple;
 
 	public static $otp_dir = 'otp';
 	public static $otp_file;
@@ -39,7 +39,9 @@ trait Otp_simple {
 
 		if(is_file($file_otp) === true) {
 
-			$i = explode(';', file_get_contents($file_otp));
+		    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
+			$i = explode(';', Env::file_get_contents($file_otp));
 
 			self::$otp_file = trim($i[0]);
 			self::$otp_time = trim($i[1]);
@@ -52,11 +54,12 @@ trait Otp_simple {
 		}
 		else {
 
+		    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
 			self::$otp_id = $otp_id;
 			self::$otp_file = $file;
 			self::$otp_name = $otp_name;
 		}
-
 		if($otp_id !== self::$otp_id)  Env::e('Otp error.');
 		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout');
 		if(self::$otp_name !== $otp_name) Env::e('Otp name');
@@ -64,7 +67,7 @@ trait Otp_simple {
 		self::$otp_id = uniqid();
 		self::$otp_time = time();
 
-		file_put_contents($file_otp, self::$otp_file.';'.self::$otp_time.';'.self::$otp_timeout.':'.self::$otp_id.';'.self::$otp_name);
+		Env::file_put_contents($file_otp, self::$otp_file.';'.self::$otp_time.';'.self::$otp_timeout.':'.self::$otp_id.';'.self::$otp_name);
 
 		// hashed with otp
 		self::$otp_word_hash = self::hash_array(Env::file_get_contents_json(self::$word_dir.'/'.$id_lang.'.json'), self::$otp_id);
@@ -80,11 +83,19 @@ trait Otp_simple {
 		// crypted
 		$otp_private_key = self::rsa_private_key_get();
 		$crypto_crypt = self::crypto_crypt($otp_private_key);
+
+		Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $crypto_crypt);
+
+		exit();
+
 		self::$otp_private_key_crypted = $crypto_crypt->cipher_back;
 		$private_cipher_back_key = $crypto_crypt->cipher_back->key;
 
 		$otp_sign_private_key = self::sign_private_key_get();
-		$crypto_crypt = self::crypto_crypt(self::$otp_sign_private_key);
+		$crypto_crypt = self::crypto_crypt($otp_sign_private_key);
+
+		Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $crypto_crypt);
+
 		self::$otp_sign_private_key_crypted = $crypto_crypt->cipher_back;
 		$sign_private_cipher_back_key = $crypto_crypt->key;
 

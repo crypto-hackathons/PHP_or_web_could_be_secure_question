@@ -19,14 +19,22 @@ trait Audit_simple {
     else $object->out->hash = self::hash($data);
 
     $data = json_encode($object);
+    if($data === false) Env::e('Error Json encoding 1');
+
     $object->out->out = new stdClass();
     $object->out->out->sign_public_key = $sign_public_key;
     $object->out->out->sign = self::sign($data);
+
     $data = json_encode($object);
+    if($data === false) Env::e('Error Json encoding 2');
+
     $data_checksum = md5($data);
     $object->out->out->out = new stdClass();
     $object->out->out->out->checksum = $data_checksum;
+
     $data = json_encode($object);
+    if($data === false) Env::e('Error Json encoding 3');
+
     $data = self::compress($data);
 
     return $data;
@@ -42,12 +50,18 @@ trait Audit_simple {
     $object_check_checksum = $object;
     unset($object_check_checksum->out->out->out);
 
-    if(md5(json_encode($object_check_checksum)) !== $object->out->out->out->checksum) Env::e('Checksum error');
+    $t = json_encode($object_check_checksum);
+    if($t === false) Env::e('Error Json encoding 1');
+
+    if(md5() !== $object->out->out->out->checksum) Env::e('Checksum error');
 
     $object_check_sign = $object_check_checksum;
     unset($object_check_sign->out->out);
 
-    if(self::sign_verify(json_encode($object_check_sign), $object->out->out->sign, $object->out->out->sign_public_key) === false) Env::e('Sign error');
+    $t2 = json_encode($object_check_sign);
+    if($t2 === false) Env::e('Error Json encoding 2');
+
+    if(self::sign_verify($t2, $object->out->out->sign, $object->out->out->sign_public_key) === false) Env::e('Sign error');
 
     $object_check_hash = $object_check_sign;
     unset($object_check_hash->out);

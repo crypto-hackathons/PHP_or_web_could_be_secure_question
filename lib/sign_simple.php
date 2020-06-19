@@ -44,7 +44,7 @@ Trait Sign_simple
 
     public static function sign_private_key_get():string {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$sign_private_key_file);
 
         return Env::file_get_contents(self::$sign_private_key_file);
     }
@@ -66,7 +66,7 @@ Trait Sign_simple
 
     public static function sign_public_key_get():string {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$sign_public_key_file);
 
         return Env::file_get_contents(self::$sign_public_key_file);
     }

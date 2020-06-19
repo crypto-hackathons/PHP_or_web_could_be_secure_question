@@ -8,13 +8,13 @@ error_reporting(E_ALL);
 require_once('../lib/rsa_simple.php');
 require_once('../lib/cert_simple.php');
 require_once('../lib/compress_simple.php');
+require_once('../lib/crypto_simple.php');
 require_once('../lib/pgp_simple.php');
 require_once('../lib/sign_simple.php');
 require_once('../lib/seed_simple.php');
 require_once('../lib/hash_simple.php');
 require_once('../lib/otp_simple.php');
 require_once('../lib/audit_simple.php');
-require_once('../lib/crypto_simple.php');
 require_once('../lib/id_simple.php');
 require_once('../lib/crypto_simple.php');
 require_once('../lib/merkle_tree_simple.php');
@@ -104,6 +104,10 @@ Class Env {
 
         $file = str_replace('../', '', $file);
         $file = str_replace('./', '', $file);
+
+        $file = self::$dir_root.'/'.self::$data_dir_global.'/'.$file;
+
+        if(is_file($file) === false) self::e('File not found');
 
         return file_get_contents(self::$dir_root.'/'.self::$data_dir_global.'/'.$file);
     }

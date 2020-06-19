@@ -9,7 +9,7 @@ trait Compress_simple {
 
     public static function compress(string $msg):string {
 
-      Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $msg);
 
       if(self::$compress_state === true) {
 
@@ -20,7 +20,7 @@ trait Compress_simple {
 
     public static function uncompress(string $msg):string {
 
-      Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+    Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $msg);
 
       if(self::$compress_state === true) {
 

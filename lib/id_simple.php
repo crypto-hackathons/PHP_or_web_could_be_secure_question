@@ -72,8 +72,11 @@ trait Id_simple {
         self::$id_sign_private_key_crypted = self::$otp_sign_private_key_crypted;
 
         // clear
+        $t = json_encode(get_class_vars(get_called_class()));
+        if($t === false) Env::e('Error Json encoding');
+
         $id = new Id($info->definition, $info->conf, self::$id_lang, self::$id_timezone, self::$id_commonName,
-          self::$id_public_key, json_encode(get_class_vars(get_called_class())), self::$id_sign_public_key);
+            self::$id_public_key, $t, self::$id_sign_public_key);
 
         $data = self::audit_object($id, $id->sign->sign_public_key, self::$otp_id);
 
@@ -169,8 +172,12 @@ trait Id_simple {
         $i->telNumber .= $anon;
         $i->password .= $anon;
         $i->pgp_passphrase .= $anon;
+
         $i->conf = json_encode($i->conf);
+        if($i->conf === false) Env::e('Error Json encoding 1');
+
         $i->definition = json_encode($i->definition);
+        if($i->definition === false) Env::e('Error Json encoding 2');
 
         Request_from_id::build($i);
 

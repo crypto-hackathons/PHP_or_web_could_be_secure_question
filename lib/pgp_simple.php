@@ -26,9 +26,9 @@ trait Pgp_simple {
 
     private static function pgp_passphrase_get():string {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$pgp_passphrase_file);
 
-        return file_get_contents(self::$pgp_passphrase_file);
+        return Env::file_get_contents(self::$pgp_passphrase_file);
     }
 
     public function pgp_crypt(string $msg, string $rsa_public_key):string {
