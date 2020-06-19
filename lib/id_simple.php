@@ -28,6 +28,10 @@ trait Id_simple {
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_id();
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $info->countryName);
+
+
         self::hash_init();
         self::$id_name = $info->n;
         $name_hashed =  self::hash($info->n);
@@ -37,7 +41,7 @@ trait Id_simple {
         self::pgp_init_key_dir(self::$id_dir->pgp);
         self::seed_init_key_dir(self::$id_dir->seed);
         self::rsa_init();
-        self::cert_init(self::hash($info->countryName), self::hash($info->stateOrProvinceName),
+        self::cert_init($info->countryName, self::hash($info->stateOrProvinceName),
           self::hash($info->localityName), self::hash($info->organizationName), self::hash($info->organizationalUnitName),
           self::hash($info->commonName), self::hash($info->emailAddress), self::hash($info->password));
         self::pgp_init(self::hash($info->pgp_passphrase));
@@ -99,7 +103,6 @@ trait Id_simple {
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_otp();
-
         $id_hashed = self::hash($info->password.$info->id_name);
         $file = self::$id_dir_global.'/'.$info->id_hashed.'.json';
 
@@ -107,18 +110,19 @@ trait Id_simple {
 
         self::otp_verify($file, $info->otp_id, $info->otp_name);
 
-        $data = file_get_contents($file);
+        $data = ENv::file_get_contents($file);
+        $id = ENv::file_get_contents_json($file);
 
         $id->cert->public_key = self::$id_public_key;
         $id->cert->sign_public_key = self::$id_sign_public_key;
 
-        $id = audit_verify($data, self::$otp_id);
+        $id = self::audit_verify($data, self::$otp_id);
 
         $id->data_cipher->private_key_cipher = self::$otp_private_key_crypted;
         $id->data_cipher->sign_private_key_cipher = self::$otp_sign_private_key_crypted;
 
-        self::$otp_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $private_key_crypted_key);
-        self::$otp_sign_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $sign_private_key_crypted_key);
+        self::$otp_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $id->data_cipher->private_key_cipher);
+        self::$otp_sign_private_key = self::crypto_uncrypt($id->data_cipher->private_key_cipher, $id->data_cipher->sign_private_key_cipher);
 
         $id->data = self::rsa_uncrypt($id);
 
@@ -158,7 +162,7 @@ trait Id_simple {
         $i = Env::file_get_contents_json(self::$id_node_file);
         $anon = '_'.uniqid();
         $i->n .= $anon;
-        $i->countryName .= $anon;
+        $i->countryName = 'AN';
         $i->stateOrProvinceName .= $anon;
         $i->localityName .= $anon;
         $i->organizationName .= $anon;

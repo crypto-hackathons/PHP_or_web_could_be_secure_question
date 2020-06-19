@@ -21,15 +21,9 @@ trait Cert_simple {
         return true;
     }
 
-    private static function cert_init(string $countryName,
-                                     string $stateOrProvinceName,
-                                     string $localityName,
-                                     string $organizationName,
-                                     string $organizationalUnitName,
-                                     string $commonName,
-                                     string $emailAddress, string $password):bool {
+    private static function cert_init(string $countryName, string $stateOrProvinceName, string $localityName, string $organizationName, string $organizationalUnitName, string $commonName, string $emailAddress, string $password):bool {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $countryName);
 
         self::$cert_user_data = array(
         'countryName' => $countryName,
@@ -39,6 +33,8 @@ trait Cert_simple {
         'organizationalUnitName' => $organizationalUnitName,
         'commonName' => $commonName,
         'emailAddress' => $emailAddress);
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, self::$cert_user_data);
 
         self::$cert_password = $password;
 
