@@ -45,9 +45,11 @@ class Request_from_id extends Request {
     $_POST['id_lang'] = $i->id_lang;
     $_POST['id_timezone'] = $i->id_timezone;
     $_POST['wordlist_file'] = $i->wordlist_file;
-    $_POST['crypt_pgp_state'] = $i->crypt_pgp_state;
-    $_POST['conf'] = $i->conf;
-    $_POST['definition'] = $i->definition;
+    $_POST['conf'] = json_encode($i->conf);
+    if($_POST['conf'] === false) Env::e('Error Json encoding: '.json_last_error_msg(), __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
+    $_POST['definition'] = json_encode($i->definition);
+    if($_POST['definition'] === false) Env::e('Error Json encoding: '.json_last_error_msg(), __CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
     return $_POST;
   }

@@ -60,9 +60,9 @@ trait Otp_simple {
 			self::$otp_file = $file;
 			self::$otp_name = $otp_name;
 		}
-		if($otp_id !== self::$otp_id)  Env::e('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout');
-		if(self::$otp_name !== $otp_name) Env::e('Otp name');
+		if($otp_id !== self::$otp_id)  Env::e('Otp error', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		if(self::$otp_name !== $otp_name) Env::e('Otp name', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		self::$otp_id = uniqid();
 		self::$otp_time = time();
@@ -86,10 +86,8 @@ trait Otp_simple {
 
 		Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $crypto_crypt);
 
-		exit();
-
 		self::$otp_private_key_crypted = $crypto_crypt->cipher_back;
-		$private_cipher_back_key = $crypto_crypt->cipher_back->key;
+		$private_cipher_back_key = $crypto_crypt->key;
 
 		$otp_sign_private_key = self::sign_private_key_get();
 		$crypto_crypt = self::crypto_crypt($otp_sign_private_key);
@@ -99,7 +97,9 @@ trait Otp_simple {
 		self::$otp_sign_private_key_crypted = $crypto_crypt->cipher_back;
 		$sign_private_cipher_back_key = $crypto_crypt->key;
 
-		return new Key_crypted_parts($private_cipher_back_key, $sign_private_cipher_back_key);
+		$obj = new Key_crypted_parts($private_cipher_back_key, $sign_private_cipher_back_key);
+
+		return $obj;
 	}
 
   function otp_verify(string $file, string $otp_id, string $otp_name):bool {
@@ -108,7 +108,7 @@ trait Otp_simple {
 
 		$file_otp = self::$otp_dir.basename($file);
 
-		if(is_file($file_otp) === false) Env::e('Otp not found');
+		if(is_file($file_otp) === false) Env::e('Otp not found', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		$i = explode(';', file_get_contents($file_otp));
 		self::$otp_file = trim($i[0]);
@@ -117,9 +117,9 @@ trait Otp_simple {
 		self::$otp_id = trim($i[3]);
 		self::$otp_name = trim($i[4]);
 
-		if($otp_id !== self::$otp_id)  Env::e('Otp error.');
-		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout');
-		if(self::$otp_name !== $otp_name) Env::e('Otp name');
+		if($otp_id !== self::$otp_id)  Env::e('Otp error', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		if(self::$otp_timeout !== false && (time() - self::$otp_time) > self::$otp_timeout) Env::e('Otp timeout', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+		if(self::$otp_name !== $otp_name) Env::e('Otp name', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
 		return true;
 	}

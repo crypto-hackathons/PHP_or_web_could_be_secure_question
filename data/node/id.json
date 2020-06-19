@@ -14,6 +14,10 @@
   "id_timezone": "Paris/Europe",
   "wordlist_file": "english",
   "crypt_pgp_state": false,
-  "conf": {},
-  "definition": {}
+  "conf": {
+  
+  },
+  "definition": {
+  
+  }
 }

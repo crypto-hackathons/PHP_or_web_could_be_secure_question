@@ -60,9 +60,9 @@ trait Seed_simple
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $file = self::$seed_private_key_master_dir.'/'.$seed_private_key_master_str->private_key_master.'_private_key_master.key';
-        $data = json_encode($seed_private_key_master_str);
 
-        if($data === false) Env::e('Error Json encoding');
+        $data = json_encode($seed_private_key_master_str);
+        if($data === false) Env::e('Error Json encoding: '.json_last_error_msg(), __CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         Env::file_put_contents($file, $data);
 

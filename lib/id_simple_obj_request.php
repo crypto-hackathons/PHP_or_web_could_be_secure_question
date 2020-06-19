@@ -6,14 +6,24 @@ class Request {
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $name);
 
-        if(isset($source[$name]) === true && empty($source[$name]) === false) return urldecode(strip_tags($source[$name]));
+        if(isset($source[$name]) === true && empty($source[$name]) === false) {
+
+            if(is_string($source[$name]) === false) return $source[$name];
+
+            return urldecode(strip_tags($source[$name]));
+        }
       }
 
-      public static function info_from_post(string $name){
+      public static function info_from_post(string $name) {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $name);
+          Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $name);
 
-        return self::info_from_request($name, $_POST);
+          if($name === 'conf' || $name === 'definition') {
+
+              $_POST[$name] = json_decode($_POST[$name]);
+              if($_POST[$name] === false) Env::e('Error Json encoding: '.json_last_error_msg(), __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+          }
+          return self::info_from_request($name, $_POST);
       }
 
       public static function info_from_get(string $name){

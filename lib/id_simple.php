@@ -21,12 +21,17 @@ trait Id_simple {
     public static $id_private_key_crypted;
     public static $id_sign_private_key_crypted;
     public static $id_node_file = 'node/id.json';
+    public static $id_stored_base64encode = array('otp_private_key_crypted', 'otp_private_key_crypted', 'otp_sign_private_key_crypted', 'id_private_key_crypted', 'id_sign_private_key_crypted', 'id_public_key', 'id_sign_public_key', 'otp_public_key', 'otp_sign_public_key');
 
     public static function id_session_otp_create_from_info():stdClass {
 
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         $info = new Request_from_id();
+
+        var_export($info->definition);
+        var_export($info->conf);
+
         self::seed_init_key_dir($info->n);
         self::hash_init();
         self::$id_name = $info->n;
@@ -38,8 +43,7 @@ trait Id_simple {
         self::pgp_init_key_dir($info->n);
         self::rsa_init();
         self::cert_init('AN', self::hash($info->stateOrProvinceName),
-        self::hash($info->localityName), self::hash($info->organizationName), self::hash($info->organizationalUnitName),
-        self::hash($info->commonName), self::hash($info->emailAddress), self::hash($info->password));
+        self::hash($info->localityName), self::hash($info->organizationName), self::hash($info->organizationalUnitName), self::hash($info->commonName), self::hash($info->emailAddress), self::hash($info->password));
         self::pgp_init(self::hash($info->pgp_passphrase));
         self::seed_init($info->wordlist_file);
         self::sign_init();
@@ -53,8 +57,7 @@ trait Id_simple {
         $id_hashed = self::hash($info->password.self::$id_name);
         $file = self::$id_dir.'/'.$info->n.'/'.$id_hashed.'.json';
 
-        $crypted_key_keys = self::otp_set($file, uniqid(), self::$id_name, $info->emailAddress, $info->telNumber,
-          $info->password, $info->pgp_passphrase, $info->id_lang);
+        $crypted_key_keys = self::otp_set($file, uniqid(), self::$id_name, $info->emailAddress, $info->telNumber, $info->password, $info->pgp_passphrase, $info->id_lang);
 
         // hasheed with otp
         self::$id_word_hash = self::$otp_word_hash;
@@ -71,12 +74,22 @@ trait Id_simple {
         self::$id_private_key_crypted = self::$otp_private_key_crypted;
         self::$id_sign_private_key_crypted = self::$otp_sign_private_key_crypted;
 
-        // clear
-        $t = json_encode(get_class_vars(get_called_class()));
-        if($t === false) Env::e('Error Json encoding');
+        $t = get_class_vars(get_called_class());
+        /*
+        foreach(self::$id_stored_base64encode as $var) $vars[$var] = base64_encode($vars[$var]);
 
-        $id = new Id($info->definition, $info->conf, self::$id_lang, self::$id_timezone, self::$id_commonName,
-            self::$id_public_key, $t, self::$id_sign_public_key);
+        unset($vars['pgp_resource']);
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $vars);
+
+        // clear
+        $t = json_encode($vars);
+        if($t === false) Env::e('Error Json encoding: '.json_last_error_msg(), __CLASS__.'::'.__METHOD__.'::'.__LINE__);
+        */
+
+        // string $otp_private_key_crypted, string $otp_sign_private_key_crypted
+
+        $id = new Id($info->definition, $info->conf, self::$id_lang, self::$id_timezone, self::$id_commonName, self::$id_public_key, $t, self::$id_sign_public_key, self::$otp_private_key_crypted, self::$otp_sign_private_key_crypted);
 
         $data = self::audit_object($id, $id->sign->sign_public_key, self::$otp_id);
 
@@ -107,7 +120,7 @@ trait Id_simple {
         $id_hashed = self::hash($info->password.$info->id_name);
         $file = self::$id_dir_global.'/'.$info->id_hashed.'.json';
 
-        if(is_file($file) === false) Env::e('Id not found');
+        if(is_file($file) === false) Env::e('Id not found', __CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         self::otp_verify($file, $info->otp_id, $info->otp_name);
 
@@ -172,12 +185,8 @@ trait Id_simple {
         $i->telNumber .= $anon;
         $i->password .= $anon;
         $i->pgp_passphrase .= $anon;
-
-        $i->conf = json_encode($i->conf);
-        if($i->conf === false) Env::e('Error Json encoding 1');
-
-        $i->definition = json_encode($i->definition);
-        if($i->definition === false) Env::e('Error Json encoding 2');
+        $i->conf = $i->conf;
+        $i->definition = $i->definition;
 
         Request_from_id::build($i);
 

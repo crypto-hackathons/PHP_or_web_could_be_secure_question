@@ -8,8 +8,7 @@ class Id {
   public $data;
   public $data_cipher;
 
-  public function __construct(stdClass $definition, stdClass $conf, string $id_lang, string $id_timezone, string $id_commonName,
-  string $id_public_key, array $private_info_list, string $id_sign_public_key, string $otp_private_key_crypted, string $otp_sign_private_key_crypted){
+  public function __construct(stdClass $definition, stdClass $conf, string $id_lang, string $id_timezone, string $id_commonName, string $id_public_key, array $private_info_list, string $id_sign_public_key, string $otp_private_key_crypted, string $otp_sign_private_key_crypted){
 
     Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $id_public_key);
 

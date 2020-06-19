@@ -122,9 +122,10 @@ Class Env {
         return json_decode(self::file_get_contents($file));
     }
 
-    static function e(string $error, string $error_redirect = 'location: login.php?error='){
+    static function e(string $error, string $context, string $error_redirect = 'location: login.php?error='){
 
         self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $error);
+        self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $context);
 
         header($error_redirect.$error);
         exit;
@@ -132,7 +133,13 @@ Class Env {
 
     static function l(string $msg, $info = '', string $eol = '<br>') {
 
-        echo $msg.' --- '.json_encode($info).$eol;
+        $i = json_encode($info);
+
+        if($i === false) {
+
+            $info = '{ "sys"="Error Json encode: '.json_last_error_msg().'"}';
+        }
+        echo time().' --- '.$msg.' --- '.json_encode($info).$eol;
     }
 }
 
