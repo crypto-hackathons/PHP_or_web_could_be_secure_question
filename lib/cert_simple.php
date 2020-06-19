@@ -4,9 +4,10 @@ trait Cert_simple {
 
     use Rsa_simple;
 
-    public static $cert_csr_file = '../data/cert/mine/src.pem';
-    public static $cert_x509_file = '../data/cert/mine/x509.pem';
-    public static $cert_pkey_file = '../data/cert/mine/private_pwd.pem';
+    public static $cert_dir = 'cert';
+    public static $cert_csr_file = 'src.pem';
+    public static $cert_x509_file = 'x509.pem';
+    public static $cert_pkey_file = 'private_pwd.pem';
     private static $cert_password;
     private static $cert_user_data;
     private static $cert_client;
@@ -21,9 +22,15 @@ trait Cert_simple {
         return true;
     }
 
-    private static function cert_init(string $countryName, string $stateOrProvinceName, string $localityName, string $organizationName, string $organizationalUnitName, string $commonName, string $emailAddress, string $password):bool {
+    private static function cert_init(string $countryName,
+                                     string $stateOrProvinceName,
+                                     string $localityName,
+                                     string $organizationName,
+                                     string $organizationalUnitName,
+                                     string $commonName,
+                                     string $emailAddress, string $password):bool {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $countryName);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         self::$cert_user_data = array(
         'countryName' => $countryName,
@@ -39,6 +46,9 @@ trait Cert_simple {
         self::$cert_password = $password;
 
         $privkey = self::rsa_private_key_get();
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $privkey);
+
         $csr = openssl_csr_new(self::$cert_user_data, $privkey);
         $sscert = openssl_csr_sign($csr, null, $privkey, self::$rsa_key_days);
 
@@ -70,13 +80,15 @@ trait Cert_simple {
         return true;
     }
 
-    public static function cert_init_key_dir(string $dir_key) {
+    public static function cert_init_key_dir(string $n) {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir_key);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $n);
 
-      self::$cert_csr_file = $dir_key.'/src.pem';
-      self::$cert_x509_file = $dir_key.'/x509.pem';
-      self::$cert_pkey_file = $dir_key.'/private_pwd.pem';
+        $dir = Env::dir_create(self::$cert_dir, $n);
+
+        self::$cert_csr_file = Env::file_set($dir.'/'.self::$cert_csr_file);
+        self::$cert_x509_file = Env::file_set($dir.'/'.self::$cert_x509_file);
+        self::$cert_pkey_file = Env::file_set($dir.'/'.self::$cert_pkey_file);
     }
 
 }

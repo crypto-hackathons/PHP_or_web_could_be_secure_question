@@ -2,8 +2,9 @@
 
 trait Rsa_simple
 {
-    public static $rsa_public_key_file = '../data/key/mine/private.pem';
-    public static $rsa_private_key_file = '../data/key/mine/public.pem';
+    public static $rsa_dir = 'rsa';
+    public static $rsa_public_key_file = 'private.pem';
+    public static $rsa_private_key_file = 'public.pem';
     private static $rsa_digest_alg = 'sha512';
     private static $rsa_private_key_bits = 4096;
     private static $rsa_private_key_type = OPENSSL_KEYTYPE_RSA;
@@ -83,11 +84,13 @@ trait Rsa_simple
         return $msg_decrypted;
     }
 
-    public static function rsa_init_key_dir(string $key_dir) {
+    public static function rsa_init_key_dir(string $n) {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $key_dir);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-      self::$rsa_public_key_file = $key_dir.'/private.pem';
-      self::$rsa_private_key_file = $key_dir.'/public.pem';
+        $dir = Env::dir_create(self::$rsa_dir, $n);
+
+        self::$rsa_public_key_file = Env::file_set($dir.'/'.self::$rsa_public_key_file);
+        self::$rsa_private_key_file = Env::file_set($dir.'/'.self::$rsa_private_key_file);
     }
 }

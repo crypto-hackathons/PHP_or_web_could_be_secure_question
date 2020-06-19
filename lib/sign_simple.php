@@ -2,12 +2,12 @@
 
 Trait Sign_simple
 {
-
+    public static $sign_dir = 'sign';
     private static $sign_private_key_bits = 2048;
     private static $sign_private_key_type = OPENSSL_KEYTYPE_RSA;
     private static $sign_algo = OPENSSL_ALGO_SHA1;
-    private static $sign_public_key_file = '../data/key/mine/private.pem';
-    private static $sign_private_key_file = '../data/key/mine/public.pem';
+    private static $sign_public_key_file = 'private.pem';
+    private static $sign_private_key_file = 'public.pem';
 
     public $sign_public_key;
 
@@ -65,5 +65,15 @@ Trait Sign_simple
         Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
         return file_get_contents(self::$sign_public_key_file);
+    }
+
+    public static function sign_init_key_dir(string $n) {
+
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE_, $n);
+
+        $dir = Env::dir_create(self::$sign_dir, $n);
+
+        self::$sign_public_key_file = Env::file_set($dir.'/'.self::$sign_public_key_file);
+        self::$sign_private_key_file = Env::file_set($dir.'/'.self::$sign_private_key_file);
     }
 }

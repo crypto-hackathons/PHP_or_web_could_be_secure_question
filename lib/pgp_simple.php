@@ -4,10 +4,11 @@ trait Pgp_simple {
 
     use Rsa_simple;
 
-    public static $pgp_env = '../data/pgp/.gnupg';
+    public static $pgp_dir = 'pgp';
+    public static $pgp_env_file = '.gnupg';
     private static $pgp_separator = '____PGP_CUSTOM_SEP____';
     private static $pgp_resource;
-    public static $pgp_passphrase_file = '../data/pgp/passphrase.pgp';
+    public static $pgp_passphrase_file = 'passphrase.pgp';
     private static $pgp_passphrase;
 
     private static function pgp_init(string $pgp_passphrase):bool {
@@ -65,12 +66,14 @@ trait Pgp_simple {
         return $plaintext;
     }
 
-    public static function pgp_init_key_dir($dir_key) {
+    public static function pgp_init_key_dir(string $n) {
 
-        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $dir_key);
+        Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
 
-      self::$pgp_env = $dir_key.'/.gnupg';
-      self::$pgp_passphrase_file = $dir_key.'/passphrase.pgp';
+        $dir = Env::dir_create(self::$pgp_dir, $n);
+
+        self::$pgp_env = Env::file_set($dir.'/'.self::$pgp_env_file);
+        self::$pgp_passphrase_file = Env::file_set($dir.'/'.self::$pgp_passphrase_file);
     }
 
 }

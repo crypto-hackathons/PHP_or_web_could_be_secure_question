@@ -57,6 +57,26 @@ Class Env {
       return $dir;
   }
 
+  public static function file_set(string $file):string {
+
+    self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $file);
+
+    $file = str_replace('../', '', $file);
+    $file = str_replace('./', '', $file);
+
+    return self::$dir_root.'/'.self::$data_dir_global.'/'.$file;
+  }
+
+  public static function file_put_contents(string $file, string $data):string {
+
+    self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $file);
+
+    $file = str_replace('../', '', $file);
+    $file = str_replace('./', '', $file);
+
+    return file_put_contents(self::$dir_root.'/'.self::$data_dir_global.'/'.$file, $data);
+  }
+
   public static function file_get_contents(string $file):string {
 
     self::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__, $file);

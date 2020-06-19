@@ -4,6 +4,7 @@ trait Otp_simple {
 
 	use Rsa_Simple, Hash_simple, Sign_simple;
 
+	public static $otp_dir = 'otp';
 	public static $otp_file;
 	public static $otp_id;
 	public static $otp_time;
@@ -17,8 +18,6 @@ trait Otp_simple {
 	public static $otp_telNumber_hash;
 	public static $otp_private_key_crypted;
 	public static $otp_sign_private_key_crypted;
-
-	public static $otp_dir = '../data/otp/';
 
 	public static function otp_hash(string $data):string {
 
@@ -111,6 +110,12 @@ trait Otp_simple {
 		if(self::$otp_name !== $otp_name) Env::e('Otp name');
 
 		return true;
+	}
+	public static function otp_init_dir(string $n) {
+
+			Env::l(__CLASS__.'::'.__METHOD__.'::'.__LINE__);
+
+			Env::dir_create(self::$otp_dir, $n);
 	}
 
 }
